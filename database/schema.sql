@@ -57,6 +57,20 @@ CREATE TABLE IF NOT EXISTS payments (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Virtual accounts table (Katpay-generated accounts for wallet funding)
+CREATE TABLE IF NOT EXISTS virtual_accounts (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  user_id         INT            NOT NULL UNIQUE,
+  account_number  VARCHAR(30)    NOT NULL,
+  account_name    VARCHAR(150)   NOT NULL,
+  bank_name       VARCHAR(100)   NOT NULL,
+  bank_code       VARCHAR(30)    NOT NULL,
+  reference       VARCHAR(100)   NOT NULL,
+  raw_response    JSON           NULL,
+  created_at      DATETIME       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Platform settings table (admin-managed)
 CREATE TABLE IF NOT EXISTS settings (
   setting_key   VARCHAR(100)  PRIMARY KEY,
