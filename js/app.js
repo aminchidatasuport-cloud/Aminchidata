@@ -144,27 +144,56 @@ const Auth = {
 const LocalUsers = (() => {
   const STORE_KEY = 'local_users';
 
+  async function hashPassword(password) {
+    if (typeof crypto !== 'undefined' && crypto.subtle) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    // Fallback for non-secure contexts: simple one-way transform
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+      hash = ((hash << 5) - hash + password.charCodeAt(i)) | 0;
+    }
+    return 'h_' + Math.abs(hash).toString(36);
+  }
+
+  // Pre-computed SHA-256 hashes for seed users
+  const SEED_HASHES = {
+    'demo@aminchidata.com': null,
+    'admin@aminchidata.com': null,
+  };
+  const SEED_PASSWORDS = {
+    'demo@aminchidata.com': 'password123',
+    'admin@aminchidata.com': 'admin123',
+  };
+
   // Seed with demo user on first load
-  function init() {
+  async function init() {
     if (!Store.get(STORE_KEY)) {
+      const demoHash = await hashPassword('password123');
+      const adminHash = await hashPassword('admin123');
       Store.set(STORE_KEY, [
-        { id: 1, name: 'Demo User', email: 'demo@aminchidata.com', phone: '08012345678', password: 'password123', wallet_balance: 5000 },
-        { id: 2, name: 'Admin User', email: 'admin@aminchidata.com', phone: '08098765432', password: 'admin123', wallet_balance: 0 },
+        { id: 1, name: 'Demo User', email: 'demo@aminchidata.com', phone: '08012345678', passwordHash: demoHash, wallet_balance: 5000 },
+        { id: 2, name: 'Admin User', email: 'admin@aminchidata.com', phone: '08098765432', passwordHash: adminHash, wallet_balance: 0 },
       ]);
     }
   }
 
-  function getAll() {
-    init();
+  async function getAll() {
+    await init();
     return Store.get(STORE_KEY, []);
   }
 
-  function findByEmail(email) {
-    return getAll().find(u => u.email === email.toLowerCase().trim());
+  async function findByEmail(email) {
+    const users = await getAll();
+    return users.find(u => u.email === email.toLowerCase().trim());
   }
 
-  function create(name, email, phone, password) {
-    const users = getAll();
+  async function create(name, email, phone, password) {
+    const users = await getAll();
     if (users.find(u => u.email === email.toLowerCase().trim())) {
       return { success: false, error: 'An account with this email already exists.' };
     }
@@ -173,7 +202,7 @@ const LocalUsers = (() => {
       name,
       email: email.toLowerCase().trim(),
       phone,
-      password,
+      passwordHash: await hashPassword(password),
       wallet_balance: 500,
     };
     users.push(newUser);
@@ -181,11 +210,11 @@ const LocalUsers = (() => {
     return { success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone } };
   }
 
-  function authenticate(email, password) {
-    const user = findByEmail(email);
-    if (!user || user.password !== password) {
-      return null;
-    }
+  async function authenticate(email, password) {
+    const user = await findByEmail(email);
+    if (!user) return null;
+    const hash = await hashPassword(password);
+    if (user.passwordHash !== hash) return null;
     return { id: user.id, name: user.name, email: user.email, phone: user.phone };
   }
 

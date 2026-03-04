@@ -54,7 +54,7 @@ function initLogin() {
       });
     } catch {
       // Backend unavailable — use client-side auth fallback
-      const localUser = LocalUsers.authenticate(emailInput.value.trim(), passInput.value);
+      const localUser = await LocalUsers.authenticate(emailInput.value.trim(), passInput.value);
       if (localUser) {
         result = { success: true, user: localUser };
       } else {
@@ -166,7 +166,7 @@ function initRegister() {
       });
     } catch {
       // Backend unavailable — use client-side registration fallback
-      result = LocalUsers.create(
+      result = await LocalUsers.create(
         nameInput.value.trim(),
         emailInput.value.trim(),
         phoneInput.value.trim(),
