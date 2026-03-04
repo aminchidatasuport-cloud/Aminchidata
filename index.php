@@ -1,0 +1,555 @@
+<?php require_once __DIR__ . '/includes/auth.php'; initSession(); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AminchiData – Affordable Data, Airtime & Bills Payment</title>
+  <meta name="description" content="AminchiData is Nigeria's most affordable VTU platform. Buy data, airtime, education pins and pay electricity bills instantly." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: '#22c55e', 'primary-dark': '#16a34a' },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+  <!-- =================== NAVBAR =================== -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <a href="index.php" class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-green-500 rounded-lg flex items-center justify-center">
+            <i class="fa-solid fa-bolt text-white text-lg"></i>
+          </div>
+          <span class="text-xl font-extrabold">
+            <span class="text-white">Aminchi</span><span class="text-green-400">Data</span>
+          </span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-7">
+          <a href="index.php" class="nav-link text-sm font-medium">Home</a>
+          <div class="relative group">
+            <button class="nav-link text-sm font-medium flex items-center gap-1">
+              Services <i class="fa-solid fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+            </button>
+            <div class="absolute top-8 left-0 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl p-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <a href="data.php" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-700 hover:text-white">
+                <i class="fa-solid fa-wifi text-blue-400 w-4"></i> Buy Data
+              </a>
+              <a href="airtime.php" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-700 hover:text-white">
+                <i class="fa-solid fa-mobile-screen text-orange-400 w-4"></i> Buy Airtime
+              </a>
+              <a href="education.php" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-700 hover:text-white">
+                <i class="fa-solid fa-graduation-cap text-purple-400 w-4"></i> Education
+              </a>
+              <a href="electricity.php" class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-slate-300 hover:bg-slate-700 hover:text-white">
+                <i class="fa-solid fa-bolt text-yellow-400 w-4"></i> Electricity
+              </a>
+            </div>
+          </div>
+          <a href="#pricing" class="nav-link text-sm font-medium">Pricing</a>
+          <a href="#contact" class="nav-link text-sm font-medium">Contact</a>
+        </div>
+
+        <!-- Auth Buttons -->
+        <div class="hidden md:flex items-center gap-3">
+          <a id="nav-login" href="login.php" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Login</a>
+          <a id="nav-register" href="register.php" class="btn-primary text-sm px-4 py-2">Get Started</a>
+          <a id="nav-dashboard" href="dashboard.php" class="btn-primary text-sm px-4 py-2 hidden">
+            <i class="fa-solid fa-gauge-high mr-1"></i> Dashboard
+          </a>
+          <div id="nav-user" class="hidden flex items-center gap-2 text-sm text-slate-300">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xs"></div>
+            <span></span>
+          </div>
+          <button id="nav-logout" class="hidden text-sm text-slate-400 hover:text-red-400 transition-colors">
+            <i class="fa-solid fa-right-from-bracket mr-1"></i>Logout
+          </button>
+        </div>
+
+        <!-- Hamburger -->
+        <button id="hamburger" class="md:hidden hamburger flex flex-col gap-1.5 p-2 rounded-lg hover:bg-slate-800" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-t border-slate-800 px-4 py-4">
+      <div class="flex flex-col gap-1">
+        <a href="index.php" class="nav-link px-3 py-2.5 rounded-lg hover:bg-slate-800 text-sm font-medium">Home</a>
+        <a href="data.php" class="nav-link px-3 py-2.5 rounded-lg hover:bg-slate-800 text-sm font-medium">
+          <i class="fa-solid fa-wifi text-blue-400 mr-2"></i>Buy Data
+        </a>
+        <a href="airtime.php" class="nav-link px-3 py-2.5 rounded-lg hover:bg-slate-800 text-sm font-medium">
+          <i class="fa-solid fa-mobile-screen text-orange-400 mr-2"></i>Buy Airtime
+        </a>
+        <a href="education.php" class="nav-link px-3 py-2.5 rounded-lg hover:bg-slate-800 text-sm font-medium">
+          <i class="fa-solid fa-graduation-cap text-purple-400 mr-2"></i>Education
+        </a>
+        <a href="electricity.php" class="nav-link px-3 py-2.5 rounded-lg hover:bg-slate-800 text-sm font-medium">
+          <i class="fa-solid fa-bolt text-yellow-400 mr-2"></i>Electricity
+        </a>
+        <div class="border-t border-slate-800 mt-2 pt-3 flex flex-col gap-2">
+          <a id="nav-login-mob" href="login.php" class="btn-outline text-sm text-center py-2">Login</a>
+          <a id="nav-register-mob" href="register.php" class="btn-primary text-sm text-center py-2">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- =================== HERO =================== -->
+  <section class="hero-gradient min-h-screen flex items-center pt-16 relative overflow-hidden">
+    <!-- Decorative glows -->
+    <div class="hero-glow w-96 h-96 bg-green-500/10 top-10 left-1/4"></div>
+    <div class="hero-glow w-64 h-64 bg-blue-500/10 bottom-20 right-1/4"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 rounded-full px-4 py-2 text-sm text-green-400 mb-6">
+            <i class="fa-solid fa-star text-xs"></i>
+            Nigeria's Most Affordable VTU Platform
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-white mb-6">
+            Data, Airtime &<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">Bills Payment</span>
+            <br />Made Easy
+          </h1>
+          <p class="text-slate-400 text-lg sm:text-xl leading-relaxed mb-8 max-w-xl">
+            Buy affordable data bundles, airtime, WAEC/NECO education pins, and pay your electricity bills — all in one place, instantly.
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="register.php" class="btn-primary text-base px-7 py-3.5 glow-green">
+              <i class="fa-solid fa-rocket mr-2"></i>Get Started Free
+            </a>
+            <a href="#services" class="btn-outline text-base px-7 py-3.5">
+              Explore Services <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+          </div>
+          <!-- Trust badges -->
+          <div class="flex flex-wrap gap-6 mt-10 text-sm text-slate-400">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-green-400"></i> Secure Payments
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-bolt text-yellow-400"></i> Instant Delivery
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-headset text-blue-400"></i> 24/7 Support
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero card visual -->
+        <div class="hidden lg:block relative">
+          <div class="wallet-card p-6 rounded-2xl shadow-2xl glow-green">
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-sm text-green-300 font-medium">Wallet Balance</span>
+              <i class="fa-solid fa-credit-card text-green-400"></i>
+            </div>
+            <div class="text-4xl font-extrabold text-white mb-1">₦12,450.00</div>
+            <div class="text-green-400 text-sm">+₦5,000 today</div>
+
+            <div class="grid grid-cols-2 gap-3 mt-6">
+              <div class="bg-black/20 rounded-xl p-3 border border-green-500/20">
+                <div class="text-xs text-green-300 mb-1">Last Purchase</div>
+                <div class="text-sm font-semibold text-white">MTN 2GB Data</div>
+                <div class="text-green-400 text-xs">₦520</div>
+              </div>
+              <div class="bg-black/20 rounded-xl p-3 border border-green-500/20">
+                <div class="text-xs text-green-300 mb-1">This Month</div>
+                <div class="text-sm font-semibold text-white">12 Transactions</div>
+                <div class="text-green-400 text-xs">₦8,320 spent</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 mt-4">
+              <a href="data.php" class="bg-black/20 rounded-lg p-2 text-center border border-green-500/20 hover:border-green-400 transition-colors group">
+                <i class="fa-solid fa-wifi text-blue-400 group-hover:text-blue-300"></i>
+                <div class="text-xs text-slate-400 mt-1">Data</div>
+              </a>
+              <a href="airtime.php" class="bg-black/20 rounded-lg p-2 text-center border border-green-500/20 hover:border-green-400 transition-colors group">
+                <i class="fa-solid fa-mobile-screen text-orange-400 group-hover:text-orange-300"></i>
+                <div class="text-xs text-slate-400 mt-1">Airtime</div>
+              </a>
+              <a href="education.php" class="bg-black/20 rounded-lg p-2 text-center border border-green-500/20 hover:border-green-400 transition-colors group">
+                <i class="fa-solid fa-graduation-cap text-purple-400 group-hover:text-purple-300"></i>
+                <div class="text-xs text-slate-400 mt-1">Edu</div>
+              </a>
+              <a href="electricity.php" class="bg-black/20 rounded-lg p-2 text-center border border-green-500/20 hover:border-green-400 transition-colors group">
+                <i class="fa-solid fa-bolt text-yellow-400 group-hover:text-yellow-300"></i>
+                <div class="text-xs text-slate-400 mt-1">Electric</div>
+              </a>
+            </div>
+          </div>
+
+          <!-- Floating notification -->
+          <div class="absolute -bottom-4 -left-4 bg-slate-800 border border-slate-700 rounded-xl p-3 flex items-center gap-3 shadow-xl">
+            <div class="w-9 h-9 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-check text-green-400 text-sm"></i>
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-white">Payment Successful!</div>
+              <div class="text-xs text-slate-400">Airtel 1GB – ₦260</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== STATS =================== -->
+  <section class="py-12 border-y border-slate-800 bg-slate-900/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div class="animate-on-scroll">
+          <div class="text-3xl font-extrabold text-white" id="stat-users">50,000+</div>
+          <div class="text-slate-400 text-sm mt-1">Happy Users</div>
+        </div>
+        <div class="animate-on-scroll">
+          <div class="text-3xl font-extrabold text-green-400" id="stat-tx">500K+</div>
+          <div class="text-slate-400 text-sm mt-1">Transactions</div>
+        </div>
+        <div class="animate-on-scroll">
+          <div class="text-3xl font-extrabold text-white">₦200M+</div>
+          <div class="text-slate-400 text-sm mt-1">Processed</div>
+        </div>
+        <div class="animate-on-scroll">
+          <div class="text-3xl font-extrabold text-green-400">99.9%</div>
+          <div class="text-slate-400 text-sm mt-1">Uptime</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== SERVICES =================== -->
+  <section id="services" class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <div class="inline-block bg-green-500/10 text-green-400 text-sm font-semibold px-4 py-1.5 rounded-full border border-green-500/30 mb-3">Our Services</div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Everything You Need in One Place</h2>
+        <p class="text-slate-400 mt-3 max-w-xl mx-auto">Fast, reliable, and affordable utility services for Nigerians.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a href="data.php" class="service-card p-6 text-center animate-on-scroll">
+          <div class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-wifi text-blue-400 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Buy Data</h3>
+          <p class="text-slate-400 text-sm">MTN, Airtel, Glo, 9mobile data bundles at the cheapest rates.</p>
+          <div class="mt-4 text-green-400 text-sm font-semibold">From ₦130 <i class="fa-solid fa-arrow-right ml-1"></i></div>
+        </a>
+
+        <a href="airtime.php" class="service-card p-6 text-center animate-on-scroll">
+          <div class="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-mobile-screen text-orange-400 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Buy Airtime</h3>
+          <p class="text-slate-400 text-sm">Recharge any network with 2% cashback discount on all purchases.</p>
+          <div class="mt-4 text-green-400 text-sm font-semibold">2% Discount <i class="fa-solid fa-arrow-right ml-1"></i></div>
+        </a>
+
+        <a href="education.php" class="service-card p-6 text-center animate-on-scroll">
+          <div class="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-graduation-cap text-purple-400 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Education Pins</h3>
+          <p class="text-slate-400 text-sm">WAEC, NECO, NABTEB result checker pins at the best prices.</p>
+          <div class="mt-4 text-green-400 text-sm font-semibold">From ₦1,000 <i class="fa-solid fa-arrow-right ml-1"></i></div>
+        </a>
+
+        <a href="electricity.php" class="service-card p-6 text-center animate-on-scroll">
+          <div class="w-14 h-14 bg-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-bolt text-yellow-400 text-2xl"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Electricity</h3>
+          <p class="text-slate-400 text-sm">Pay electricity bills for all 11 DISCOs across Nigeria instantly.</p>
+          <div class="mt-4 text-green-400 text-sm font-semibold">All DISCOs <i class="fa-solid fa-arrow-right ml-1"></i></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== PRICING =================== -->
+  <section id="pricing" class="py-20 bg-slate-900/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <div class="inline-block bg-green-500/10 text-green-400 text-sm font-semibold px-4 py-1.5 rounded-full border border-green-500/30 mb-3">Pricing</div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Unbeatable Data Prices</h2>
+        <p class="text-slate-400 mt-3">MTN data bundles – compare our prices!</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div class="pricing-card animate-on-scroll">
+          <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-wifi text-green-400"></i>
+          </div>
+          <h3 class="text-2xl font-extrabold text-white">500MB</h3>
+          <div class="text-3xl font-extrabold text-green-400 mt-1 mb-0.5">₦150</div>
+          <div class="text-slate-500 text-sm mb-4">1 Day validity</div>
+          <div class="border-t border-slate-700 pt-4">
+            <div class="text-xs text-slate-400">Available on: MTN, Airtel, 9mobile</div>
+          </div>
+        </div>
+
+        <div class="pricing-card featured animate-on-scroll">
+          <div class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">Popular</div>
+          <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-wifi text-green-400"></i>
+          </div>
+          <h3 class="text-2xl font-extrabold text-white">2GB</h3>
+          <div class="text-3xl font-extrabold text-green-400 mt-1 mb-0.5">₦520</div>
+          <div class="text-slate-500 text-sm mb-4">30 Days validity</div>
+          <div class="border-t border-slate-700 pt-4">
+            <div class="text-xs text-slate-400">Available on: MTN, Airtel, 9mobile</div>
+          </div>
+        </div>
+
+        <div class="pricing-card animate-on-scroll">
+          <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-wifi text-green-400"></i>
+          </div>
+          <h3 class="text-2xl font-extrabold text-white">5GB</h3>
+          <div class="text-3xl font-extrabold text-green-400 mt-1 mb-0.5">₦1,300</div>
+          <div class="text-slate-500 text-sm mb-4">30 Days validity</div>
+          <div class="border-t border-slate-700 pt-4">
+            <div class="text-xs text-slate-400">Available on: MTN, Airtel</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="data.php" class="btn-primary px-8 py-3.5 text-base">View All Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== WHY CHOOSE US =================== -->
+  <section class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <div class="inline-block bg-green-500/10 text-green-400 text-sm font-semibold px-4 py-1.5 rounded-full border border-green-500/30 mb-3">Why Us</div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Why Choose AminchiData?</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-bolt text-green-400 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-white mb-2">Instant Delivery</h3>
+          <p class="text-slate-400 text-sm">Data and airtime delivered within seconds of payment.</p>
+        </div>
+
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-tags text-blue-400 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-white mb-2">Affordable Prices</h3>
+          <p class="text-slate-400 text-sm">Consistently lower prices than recharging directly with telcos.</p>
+        </div>
+
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-headset text-purple-400 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-white mb-2">24/7 Support</h3>
+          <p class="text-slate-400 text-sm">Our customer support team is available round the clock.</p>
+        </div>
+
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mb-4">
+            <i class="fa-solid fa-shield-halved text-yellow-400 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-white mb-2">Secure Transactions</h3>
+          <p class="text-slate-400 text-sm">Bank-grade encryption protects every transaction you make.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== TESTIMONIALS =================== -->
+  <section class="py-20 bg-slate-900/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <div class="inline-block bg-green-500/10 text-green-400 text-sm font-semibold px-4 py-1.5 rounded-full border border-green-500/30 mb-3">Testimonials</div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">What Our Users Say</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="flex gap-1 mb-4">
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">"AminchiData is the best VTU service I've used. Data delivered instantly and at very affordable prices. Highly recommended!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm">A</div>
+            <div>
+              <div class="font-semibold text-white text-sm">Abubakar Sani</div>
+              <div class="text-slate-500 text-xs">Lagos, Nigeria</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="flex gap-1 mb-4">
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">"I bought my WAEC pins here and they were delivered immediately. The process was so simple and the price was better than anywhere else."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">C</div>
+            <div>
+              <div class="font-semibold text-white text-sm">Chidinma Okafor</div>
+              <div class="text-slate-500 text-xs">Enugu, Nigeria</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-card p-6 animate-on-scroll">
+          <div class="flex gap-1 mb-4">
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star text-yellow-400 text-sm"></i>
+            <i class="fa-solid fa-star-half-stroke text-yellow-400 text-sm"></i>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">"Their electricity payment service saved me a long trip to the PHCN office. Paid from my phone in 30 seconds. Amazing service!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">M</div>
+            <div>
+              <div class="font-semibold text-white text-sm">Mohammed Idris</div>
+              <div class="text-slate-500 text-xs">Kano, Nigeria</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== CTA =================== -->
+  <section class="py-20 bg-gradient-to-r from-green-900/30 via-slate-900 to-green-900/30 border-y border-green-500/20">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">Ready to Get Started?</h2>
+      <p class="text-slate-400 text-lg mb-8">Join over 50,000 Nigerians who trust AminchiData for their daily utility needs.</p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="register.php" class="btn-primary text-base px-8 py-4 glow-green">
+          <i class="fa-solid fa-user-plus mr-2"></i>Create Free Account
+        </a>
+        <a href="login.php" class="btn-outline text-base px-8 py-4">
+          Already have an account? Login
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================== FOOTER =================== -->
+  <footer id="contact" class="bg-slate-950 pt-16 pb-8 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div>
+          <a href="index.php" class="flex items-center gap-2 mb-4">
+            <div class="w-9 h-9 bg-green-500 rounded-lg flex items-center justify-center">
+              <i class="fa-solid fa-bolt text-white"></i>
+            </div>
+            <span class="text-xl font-extrabold"><span class="text-white">Aminchi</span><span class="text-green-400">Data</span></span>
+          </a>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">Nigeria's most affordable VTU and bills payment platform. Fast, reliable, secure.</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors text-slate-400 hover:text-white">
+              <i class="fa-brands fa-twitter text-sm"></i>
+            </a>
+            <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors text-slate-400 hover:text-white">
+              <i class="fa-brands fa-facebook-f text-sm"></i>
+            </a>
+            <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors text-slate-400 hover:text-white">
+              <i class="fa-brands fa-instagram text-sm"></i>
+            </a>
+            <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors text-slate-400 hover:text-white">
+              <i class="fa-brands fa-whatsapp text-sm"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="font-bold text-white mb-4">Quick Links</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="index.php" class="text-slate-400 hover:text-green-400 transition-colors">About Us</a></li>
+            <li><a href="#services" class="text-slate-400 hover:text-green-400 transition-colors">Services</a></li>
+            <li><a href="#pricing" class="text-slate-400 hover:text-green-400 transition-colors">Pricing</a></li>
+            <li><a href="#contact" class="text-slate-400 hover:text-green-400 transition-colors">Contact</a></li>
+            <li><a href="#" class="text-slate-400 hover:text-green-400 transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Services -->
+        <div>
+          <h4 class="font-bold text-white mb-4">Services</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="data.php" class="text-slate-400 hover:text-green-400 transition-colors">Buy Data</a></li>
+            <li><a href="airtime.php" class="text-slate-400 hover:text-green-400 transition-colors">Buy Airtime</a></li>
+            <li><a href="education.php" class="text-slate-400 hover:text-green-400 transition-colors">Education Pins</a></li>
+            <li><a href="electricity.php" class="text-slate-400 hover:text-green-400 transition-colors">Electricity Bills</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="font-bold text-white mb-4">Contact Us</h4>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-2.5 text-slate-400">
+              <i class="fa-solid fa-envelope text-green-400 mt-0.5"></i>
+              support@aminchidata.com
+            </li>
+            <li class="flex items-start gap-2.5 text-slate-400">
+              <i class="fa-solid fa-phone text-green-400 mt-0.5"></i>
+              +234 901 234 5678
+            </li>
+            <li class="flex items-start gap-2.5 text-slate-400">
+              <i class="fa-brands fa-whatsapp text-green-400 mt-0.5"></i>
+              +234 901 234 5678
+            </li>
+            <li class="flex items-start gap-2.5 text-slate-400">
+              <i class="fa-solid fa-clock text-green-400 mt-0.5"></i>
+              24/7 Support Available
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-divider mb-8"></div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-slate-500">
+        <p>© 2024 AminchiData. All rights reserved.</p>
+        <div class="flex gap-5">
+          <a href="#" class="hover:text-slate-300 transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-slate-300 transition-colors">Terms of Service</a>
+          <a href="admin-login.php" class="hover:text-slate-300 transition-colors"><i class="fa-solid fa-shield-halved mr-1"></i>Admin</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // Redirect if not logged in
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
 
   const user = Auth.getUser();
 
@@ -52,9 +52,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function updateWalletDisplay() {
+async function updateWalletDisplay() {
   const el = document.getElementById('wallet-balance');
-  if (el) el.textContent = formatCurrency(getWalletBalance());
+  if (!el) return;
+  try {
+    const data = await API.get('api/wallet.php?action=balance');
+    el.textContent = formatCurrency(data.balance);
+  } catch {
+    el.textContent = formatCurrency(getWalletBalance());
+  }
 }
 
 function loadStats() {
@@ -85,11 +91,17 @@ function initCounters() {
   });
 }
 
-function loadRecentTransactions() {
+async function loadRecentTransactions() {
   const tbody = document.getElementById('recent-tx-body');
   if (!tbody) return;
 
-  const txns = getMockTransactions().slice(0, 5);
+  let txns;
+  try {
+    const data = await API.get('api/transactions.php?per_page=5');
+    txns = data.transactions || [];
+  } catch {
+    txns = getMockTransactions().slice(0, 5);
+  }
 
   if (txns.length === 0) {
     tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-500">No transactions yet</td></tr>`;
@@ -98,7 +110,7 @@ function loadRecentTransactions() {
 
   tbody.innerHTML = txns.map(tx => `
     <tr>
-      <td class="text-slate-400 text-sm whitespace-nowrap">${formatDateShort(tx.date)}</td>
+      <td class="text-slate-400 text-sm whitespace-nowrap">${formatDateShort(tx.date || tx.created_at)}</td>
       <td>
         <span class="inline-flex items-center gap-1.5">
           <i class="fa-solid ${typeIcon(tx.type)} text-${typeColor(tx.type)}-400 text-xs"></i>
@@ -176,11 +188,19 @@ async function showFundWalletModal() {
 
     const btn = overlay.querySelector('#fund-confirm');
     setButtonLoading(btn, true);
-    await new Promise(r => setTimeout(r, 1500));
 
-    fundWallet(amount);
+    try {
+      const result = await API.post('api/wallet.php?action=fund', { amount });
+      if (result.error) {
+        setButtonLoading(btn, false);
+        Toast.show(result.error, 'error');
+        return;
+      }
+    } catch {
+      fundWallet(amount);
+    }
+
     overlay.remove();
-
     updateWalletDisplay();
     Toast.show(`₦${amount.toLocaleString()} added to your wallet!`, 'success');
   });

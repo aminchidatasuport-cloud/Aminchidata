@@ -14,7 +14,7 @@ const NETWORK_PREFIXES = {
 let selectedAirtimeNetwork = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
 
   initNetworkButtons();
   initForm();
@@ -127,19 +127,27 @@ function initForm() {
     if (!confirmed) return;
 
     setButtonLoading(buyBtn, true);
-    await new Promise(r => setTimeout(r, 2000));
 
-    deductWallet(amount);
-    addTransaction({
-      type: 'Airtime',
-      description: `${selectedAirtimeNetwork} Airtime`,
-      amount,
-      status: 'Success',
-      phone: phoneInput.value,
-    });
+    try {
+      const result = await API.post('api/airtime.php', {
+        network: selectedAirtimeNetwork,
+        phone: phoneInput.value,
+        amount,
+      });
 
-    setButtonLoading(buyBtn, false);
-    Toast.show(`${formatCurrency(amount)} ${selectedAirtimeNetwork} airtime sent to ${phoneInput.value} successfully!`, 'success');
+      if (result.error) {
+        setButtonLoading(buyBtn, false);
+        Toast.show(result.error, 'error');
+        return;
+      }
+
+      setButtonLoading(buyBtn, false);
+      Toast.show(result.message || `${formatCurrency(amount)} ${selectedAirtimeNetwork} airtime sent to ${phoneInput.value} successfully!`, 'success');
+    } catch {
+      setButtonLoading(buyBtn, false);
+      Toast.show('Network error. Please try again.', 'error');
+      return;
+    }
 
     // Reset
     form.reset();

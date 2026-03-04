@@ -7,9 +7,10 @@ const PAGE_SIZE = 8;
 let currentPage = 1;
 let currentFilter = 'All';
 let filteredTxns = [];
+let totalFilteredCount = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
 
   initFilters();
   loadTransactions();
@@ -35,16 +36,23 @@ function initFilters() {
   });
 }
 
-function loadTransactions() {
-  const allTxns = getMockTransactions();
-
-  filteredTxns = currentFilter === 'All'
-    ? allTxns
-    : allTxns.filter(tx => tx.type === currentFilter);
-
-  renderTable();
-  renderPagination();
-  updateStats(allTxns);
+async function loadTransactions() {
+  try {
+    const data = await API.get(`api/transactions.php?type=${currentFilter}&page=${currentPage}&per_page=${PAGE_SIZE}`);
+    filteredTxns = data.transactions || [];
+    totalFilteredCount = data.total || filteredTxns.length;
+    renderTable();
+    renderPagination(data.total_pages || 1, data.total || 0);
+    updateStats(data.stats || {});
+  } catch {
+    // Fallback to localStorage
+    const allTxns = getMockTransactions();
+    filteredTxns = currentFilter === 'All' ? allTxns : allTxns.filter(tx => tx.type === currentFilter);
+    totalFilteredCount = filteredTxns.length;
+    renderTable();
+    renderPagination();
+    updateStats(allTxns);
+  }
 }
 
 function renderTable() {
@@ -66,7 +74,7 @@ function renderTable() {
 
   tbody.innerHTML = paginated.map(tx => `
     <tr>
-      <td class="text-slate-400 text-sm whitespace-nowrap">${formatDate(tx.date)}</td>
+      <td class="text-slate-400 text-sm whitespace-nowrap">${formatDate(tx.date || tx.created_at)}</td>
       <td>
         <span class="inline-flex items-center gap-1.5">
           <span class="w-7 h-7 rounded-full flex items-center justify-center text-xs ${typeColorClass(tx.type)}">
@@ -82,19 +90,25 @@ function renderTable() {
     </tr>`).join('');
 }
 
-function renderPagination() {
+function renderPagination(totalPages, totalCount) {
   const container = document.getElementById('pagination');
   if (!container) return;
 
-  const totalPages = Math.ceil(filteredTxns.length / PAGE_SIZE);
+  if (totalPages === undefined) {
+    totalPages = Math.ceil(filteredTxns.length / PAGE_SIZE);
+  }
+  if (totalCount === undefined) {
+    totalCount = filteredTxns.length;
+  }
+
   const countEl = document.getElementById('tx-count');
   const start = (currentPage - 1) * PAGE_SIZE + 1;
-  const end = Math.min(currentPage * PAGE_SIZE, filteredTxns.length);
+  const end = Math.min(currentPage * PAGE_SIZE, totalCount);
 
   if (countEl) {
-    countEl.textContent = filteredTxns.length === 0
+    countEl.textContent = totalCount === 0
       ? 'No results'
-      : `Showing ${start}–${end} of ${filteredTxns.length}`;
+      : `Showing ${start}–${end} of ${totalCount}`;
   }
 
   if (totalPages <= 1) { container.innerHTML = ''; return; }
@@ -144,16 +158,27 @@ function renderPagination() {
   });
 }
 
-function updateStats(txns) {
-  const successTxns = txns.filter(t => t.status === 'Success');
-  const totalSpent  = successTxns.reduce((s, t) => s + t.amount, 0);
+function updateStats(data) {
+  // Support both object format from API and array format from fallback
+  let totalCount, successCount, totalSpent;
+  if (Array.isArray(data)) {
+    const txns = data;
+    const successTxns = txns.filter(t => t.status === 'Success');
+    totalCount = txns.length;
+    successCount = successTxns.length;
+    totalSpent = successTxns.reduce((s, t) => s + t.amount, 0);
+  } else {
+    totalCount = data.total || 0;
+    successCount = data.success_count || data.success || 0;
+    totalSpent = data.total_spent || 0;
+  }
 
   const totalEl   = document.getElementById('stat-total');
   const successEl = document.getElementById('stat-success');
   const spentEl   = document.getElementById('stat-spent');
 
-  if (totalEl)   totalEl.textContent   = txns.length;
-  if (successEl) successEl.textContent = successTxns.length;
+  if (totalEl)   totalEl.textContent   = totalCount;
+  if (successEl) successEl.textContent = successCount;
   if (spentEl)   spentEl.textContent   = formatCurrency(totalSpent);
 }
 
