@@ -169,7 +169,7 @@ function updateStats(data) {
     totalSpent = successTxns.reduce((s, t) => s + t.amount, 0);
   } else {
     totalCount = data.total || 0;
-    successCount = data.success || 0;
+    successCount = data.success_count || data.success || 0;
     totalSpent = data.total_spent || 0;
   }
 

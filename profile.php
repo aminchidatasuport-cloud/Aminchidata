@@ -261,8 +261,15 @@
         if (!nameOk || !emailOk || !phoneOk) return;
         const btn = document.getElementById('save-profile-btn');
         setButtonLoading(btn, true);
-        await new Promise(r => setTimeout(r, 1000));
-        // Update stored user
+        const result = await API.post('api/profile.php?action=update', {
+          name: nameEl.value.trim(),
+          phone: phoneEl.value.trim(),
+        });
+        setButtonLoading(btn, false);
+        if (result.error) {
+          Toast.show(result.error, 'error'); return;
+        }
+        // Update local UI state
         const updatedUser = { ...user, name: nameEl.value.trim(), email: emailEl.value.trim(), phone: phoneEl.value.trim() };
         Store.set('user', updatedUser);
         setEl('profile-name', updatedUser.name);
@@ -270,7 +277,6 @@
         setEl('profile-phone', updatedUser.phone);
         if (avatar) avatar.textContent = updatedUser.name.charAt(0).toUpperCase();
         if (topAvatar) topAvatar.textContent = updatedUser.name.charAt(0).toUpperCase();
-        setButtonLoading(btn, false);
         Toast.show('Profile updated successfully!', 'success');
       });
 
@@ -284,17 +290,16 @@
         const ok1 = validateField(newPass, { required: true, minLength: 8 });
         const ok2 = validateField(confPass, { required: true, match: { value: newPass.value, message: 'Passwords do not match.' } });
         if (!ok1 || !ok2) return;
-        // Verify current password
-        const users = Store.get('users', []);
-        const storedUser = users.find(u => u.id === user.id);
-        if (storedUser && storedUser.password !== curPass.value) {
-          Toast.show('Current password is incorrect.', 'error'); return;
-        }
         const btn = document.getElementById('change-pass-btn');
         setButtonLoading(btn, true);
-        await new Promise(r => setTimeout(r, 1200));
-        if (storedUser) { storedUser.password = newPass.value; Store.set('users', users); }
+        const result = await API.post('api/profile.php?action=change_password', {
+          current_password: curPass.value,
+          new_password: newPass.value,
+        });
         setButtonLoading(btn, false);
+        if (result.error) {
+          Toast.show(result.error, 'error'); return;
+        }
         document.getElementById('password-form').reset();
         Toast.show('Password changed successfully!', 'success');
       });
