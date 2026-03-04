@@ -156,3 +156,60 @@ function generateToken(): string
     }
     return implode('-', $parts);
 }
+
+/**
+ * Generate a unique payment reference.
+ */
+function generatePaymentReference(string $prefix = 'PAY'): string
+{
+    return $prefix . '_' . time() . '_' . bin2hex(random_bytes(6));
+}
+
+/**
+ * Record a payment in the payments table.
+ */
+function recordPayment(int $userId, string $gateway, string $gatewayRef, float $amount, string $status = 'pending', ?array $metadata = null): int
+{
+    $db = getDB();
+    $stmt = $db->prepare(
+        'INSERT INTO payments (user_id, gateway, gateway_ref, amount, status, metadata, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, NOW())'
+    );
+    $stmt->execute([
+        $userId,
+        $gateway,
+        $gatewayRef,
+        $amount,
+        $status,
+        $metadata !== null ? json_encode($metadata) : null,
+    ]);
+    return (int)$db->lastInsertId();
+}
+
+/**
+ * Get a payment record by its gateway reference.
+ */
+function getPaymentByReference(string $gatewayRef): ?array
+{
+    $db = getDB();
+    $stmt = $db->prepare('SELECT * FROM payments WHERE gateway_ref = ?');
+    $stmt->execute([$gatewayRef]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Update the status of a payment record.
+ */
+function updatePaymentStatus(string $gatewayRef, string $status, ?array $metadata = null): bool
+{
+    $db = getDB();
+    if ($metadata !== null) {
+        $stmt = $db->prepare('UPDATE payments SET status = ?, metadata = ? WHERE gateway_ref = ?');
+        $stmt->execute([$status, json_encode($metadata), $gatewayRef]);
+    } else {
+        $stmt = $db->prepare('UPDATE payments SET status = ? WHERE gateway_ref = ?');
+        $stmt->execute([$status, $gatewayRef]);
+    }
+    return $stmt->rowCount() > 0;
+}

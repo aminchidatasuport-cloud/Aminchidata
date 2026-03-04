@@ -78,6 +78,14 @@ CREATE TABLE IF NOT EXISTS settings (
   updated_at    DATETIME      NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
+-- Webhook logs table (audit trail for payment notifications)
+CREATE TABLE IF NOT EXISTS webhook_logs (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  provider   VARCHAR(30)  NOT NULL COMMENT 'katpay, paystack, flutterwave',
+  payload    JSON         NOT NULL,
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
 -- Indexes for performance
 CREATE INDEX idx_transactions_user   ON transactions(user_id);
 CREATE INDEX idx_transactions_type   ON transactions(type);
@@ -85,6 +93,7 @@ CREATE INDEX idx_transactions_status ON transactions(status);
 CREATE INDEX idx_education_pins_user ON education_pins(user_id);
 CREATE INDEX idx_payments_user       ON payments(user_id);
 CREATE INDEX idx_payments_gateway    ON payments(gateway_ref);
+CREATE INDEX idx_webhook_logs_provider ON webhook_logs(provider);
 
 -- Seed demo user (password: password123)
 INSERT INTO users (name, email, phone, password, wallet_balance, is_admin) VALUES
