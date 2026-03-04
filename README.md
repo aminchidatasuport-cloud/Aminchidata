@@ -2,6 +2,10 @@
 
 > Nigeria's most affordable VTU (Virtual Top-Up) and Bills Payment web application — now powered by PHP for seamless API and payment gateway integration.
 
+## 🌐 Live Demo
+
+🔗 **[Test the app here → aminchidatasuport-cloud.github.io/Aminchidata](https://aminchidatasuport-cloud.github.io/Aminchidata/)**
+
 ## 🔗 Demo Credentials
 
 > **Demo Login:** `demo@aminchidata.com` / `password123`
