@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register – AminchiData</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center py-12 px-4">
+
+  <div class="w-full max-w-md">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <a href="index.html" class="inline-flex items-center gap-2">
+        <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+          <i class="fa-solid fa-bolt text-white text-lg"></i>
+        </div>
+        <span class="text-2xl font-extrabold"><span class="text-white">Aminchi</span><span class="text-green-400">Data</span></span>
+      </a>
+      <h1 class="text-2xl font-bold text-white mt-4">Create Account</h1>
+      <p class="text-slate-400 text-sm mt-1">Join thousands of users today — it's free!</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-2xl">
+      <form id="register-form" novalidate>
+        <!-- Full Name -->
+        <div class="field-wrap mb-4">
+          <label for="fullname" class="block text-sm font-medium text-slate-300 mb-1.5">Full Name</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+            <input id="fullname" type="text" placeholder="John Doe" class="form-input pl-10" autocomplete="name" />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field-wrap mb-4">
+          <label for="email" class="block text-sm font-medium text-slate-300 mb-1.5">Email Address</label>
+          <div class="relative">
+            <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+            <input id="email" type="email" placeholder="your@email.com" class="form-input pl-10" autocomplete="email" />
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="field-wrap mb-4">
+          <label for="phone" class="block text-sm font-medium text-slate-300 mb-1.5">Phone Number</label>
+          <div class="relative">
+            <i class="fa-solid fa-phone absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+            <input id="phone" type="tel" placeholder="08012345678" class="form-input pl-10" autocomplete="tel" maxlength="11" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="field-wrap mb-4">
+          <label for="password" class="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+            <input id="password" type="password" placeholder="Min. 8 characters" class="form-input pl-10 pr-12" autocomplete="new-password" />
+            <button type="button" id="toggle-pass" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="field-wrap mb-5">
+          <label for="confirm-password" class="block text-sm font-medium text-slate-300 mb-1.5">Confirm Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+            <input id="confirm-password" type="password" placeholder="Repeat your password" class="form-input pl-10 pr-12" autocomplete="new-password" />
+            <button type="button" id="toggle-confirm" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <label class="flex items-start gap-2.5 cursor-pointer mb-6">
+          <input id="terms" type="checkbox" class="w-4 h-4 rounded accent-green-500 mt-0.5 flex-shrink-0" />
+          <span class="text-sm text-slate-400">
+            I agree to the <a href="#" class="text-green-400 hover:underline">Terms of Service</a> and
+            <a href="#" class="text-green-400 hover:underline">Privacy Policy</a>
+          </span>
+        </label>
+
+        <button id="register-btn" type="submit" class="btn-primary w-full py-3 text-base">
+          <i class="fa-solid fa-user-plus mr-2"></i>Create Account
+        </button>
+      </form>
+
+      <p class="text-center text-slate-400 text-sm mt-6">
+        Already have an account?
+        <a href="login.html" class="text-green-400 font-semibold hover:text-green-300 ml-1">Sign in</a>
+      </p>
+    </div>
+
+    <p class="text-center text-slate-600 text-xs mt-6">
+      <a href="index.html" class="hover:text-slate-400 transition-colors"><i class="fa-solid fa-arrow-left mr-1"></i>Back to Home</a>
+    </p>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
