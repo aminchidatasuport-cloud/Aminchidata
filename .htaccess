@@ -1,0 +1,28 @@
+# AminchiData - Apache Configuration
+# Requires mod_rewrite enabled
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Redirect .html to .php for backward compatibility
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.+)\.html$ $1.php [L,R=301]
+</IfModule>
+
+# Deny access to config and include files directly
+<FilesMatch "\.(sql|log)$">
+    Require all denied
+</FilesMatch>
+
+# Protect sensitive directories
+<IfModule mod_rewrite.c>
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^database/ - [F,L]
+</IfModule>
+
+# PHP settings (if allowed by host)
+<IfModule mod_php.c>
+    php_value session.cookie_httponly 1
+    php_value session.use_strict_mode 1
+</IfModule>
