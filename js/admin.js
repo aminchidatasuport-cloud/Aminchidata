@@ -75,12 +75,8 @@ function initAdminNav() {
       if (target) target.classList.remove('hidden');
 
       // Update sidebar active state
-      navItems.forEach(nav => {
-        nav.classList.remove('bg-green-500/10', 'text-green-400', 'border-green-500');
-        nav.classList.add('text-slate-400', 'hover:text-white');
-      });
-      item.classList.add('bg-green-500/10', 'text-green-400', 'border-green-500');
-      item.classList.remove('text-slate-400', 'hover:text-white');
+      navItems.forEach(nav => nav.classList.remove('active'));
+      item.classList.add('active');
 
       // Update header title
       const titleEl = document.getElementById('admin-page-title');
@@ -102,9 +98,10 @@ function initAdminNav() {
 
   // Admin logout
   const logoutBtn = document.getElementById('admin-logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => AdminAuth.logout());
-  }
+  const logoutBtnMob = document.getElementById('logout-btn-mobile');
+  [logoutBtn, logoutBtnMob].forEach(btn => {
+    if (btn) btn.addEventListener('click', () => AdminAuth.logout());
+  });
 }
 
 // ===================== Dashboard Section =====================
