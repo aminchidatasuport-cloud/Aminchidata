@@ -50,14 +50,14 @@ switch ($action) {
                 $account = getVirtualAccount($userId);
             }
         }
-        if (!$account) {
+        if (!$account || empty($account['account_number'])) {
             jsonResponse(['error' => 'Virtual account not available. Please try again later.'], 503);
         }
         jsonResponse([
             'account_number' => $account['account_number'],
-            'account_name'   => $account['account_name'],
-            'bank_name'      => $account['bank_name'],
-            'bank_code'      => $account['bank_code'],
+            'account_name'   => $account['account_name'] ?: '',
+            'bank_name'      => $account['bank_name'] ?: '',
+            'bank_code'      => $account['bank_code'] ?: '',
         ]);
         break;
 
