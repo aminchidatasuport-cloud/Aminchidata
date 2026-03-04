@@ -26,6 +26,7 @@
       </div>
       <nav class="flex-1 p-4 space-y-1">
         <a href="dashboard.php" class="sidebar-link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="fund-account.php" class="sidebar-link"><i class="fa-solid fa-building-columns"></i> Fund Account</a>
         <a href="data.php" class="sidebar-link active"><i class="fa-solid fa-wifi"></i> Buy Data</a>
         <a href="airtime.php" class="sidebar-link"><i class="fa-solid fa-mobile-screen"></i> Buy Airtime</a>
         <a href="education.php" class="sidebar-link"><i class="fa-solid fa-graduation-cap"></i> Education</a>
