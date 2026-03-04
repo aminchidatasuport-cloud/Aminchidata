@@ -1,0 +1,207 @@
+<?php require_once __DIR__ . '/includes/auth.php'; requireLogin(); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard – AminchiData</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-10 lg:hidden sidebar-overlay"></div>
+
+  <div class="flex min-h-screen">
+    <!-- =================== SIDEBAR =================== -->
+    <aside id="sidebar" class="sidebar flex flex-col z-20">
+      <!-- Logo -->
+      <div class="p-5 border-b border-slate-700">
+        <a href="index.php" class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-green-500 rounded-lg flex items-center justify-center">
+            <i class="fa-solid fa-bolt text-white"></i>
+          </div>
+          <span class="text-xl font-extrabold"><span class="text-white">Aminchi</span><span class="text-green-400">Data</span></span>
+        </a>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="flex-1 p-4 space-y-1">
+        <a href="dashboard.php" class="sidebar-link active">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a href="data.php" class="sidebar-link">
+          <i class="fa-solid fa-wifi"></i> Buy Data
+        </a>
+        <a href="airtime.php" class="sidebar-link">
+          <i class="fa-solid fa-mobile-screen"></i> Buy Airtime
+        </a>
+        <a href="education.php" class="sidebar-link">
+          <i class="fa-solid fa-graduation-cap"></i> Education
+        </a>
+        <a href="electricity.php" class="sidebar-link">
+          <i class="fa-solid fa-bolt"></i> Electricity
+        </a>
+        <a href="transactions.php" class="sidebar-link">
+          <i class="fa-solid fa-clock-rotate-left"></i> Transactions
+        </a>
+        <a href="profile.php" class="sidebar-link">
+          <i class="fa-solid fa-user-gear"></i> Profile
+        </a>
+      </nav>
+
+      <!-- Logout -->
+      <div class="p-4 border-t border-slate-700">
+        <button id="logout-btn" class="sidebar-link w-full text-red-400 hover:bg-red-500/10 hover:text-red-400">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- =================== MAIN CONTENT =================== -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Top Bar -->
+      <header class="bg-slate-800/70 border-b border-slate-700 px-4 sm:px-6 py-3.5 flex items-center gap-3 sticky top-0 z-10">
+        <button id="sidebar-toggle" class="lg:hidden text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-700">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <h1 class="font-semibold text-white text-lg">Dashboard</h1>
+        <div class="ml-auto flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm" id="user-avatar-initial">U</div>
+            <span class="text-sm text-slate-300 hidden sm:block" id="user-name">User</span>
+          </div>
+          <button id="logout-btn-mobile" class="text-sm text-slate-400 hover:text-red-400 transition-colors p-1.5">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+        <!-- Greeting -->
+        <div class="mb-8">
+          <h2 id="user-greeting" class="text-2xl font-bold text-white">Good morning! 👋</h2>
+          <p class="text-slate-400 text-sm mt-1">Here's a summary of your account.</p>
+        </div>
+
+        <!-- Wallet + Quick Actions -->
+        <div class="grid lg:grid-cols-3 gap-6 mb-8">
+          <!-- Wallet Card -->
+          <div class="wallet-card p-6 col-span-1">
+            <div class="flex items-center justify-between mb-1 relative z-10">
+              <span class="text-green-300 text-sm font-medium">Wallet Balance</span>
+              <i class="fa-solid fa-wallet text-green-400"></i>
+            </div>
+            <div id="wallet-balance" class="text-3xl font-extrabold text-white my-2 relative z-10">₦0.00</div>
+            <button id="fund-wallet-btn" class="btn-primary text-sm px-4 py-2 mt-2 relative z-10">
+              <i class="fa-solid fa-plus mr-1.5"></i>Fund Wallet
+            </button>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <a href="data.php" class="service-card p-4 text-center group">
+              <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500/30 transition-colors">
+                <i class="fa-solid fa-wifi text-blue-400 text-xl"></i>
+              </div>
+              <div class="text-sm font-semibold text-white">Buy Data</div>
+              <div class="text-xs text-slate-500 mt-0.5">From ₦130</div>
+            </a>
+            <a href="airtime.php" class="service-card p-4 text-center group">
+              <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-500/30 transition-colors">
+                <i class="fa-solid fa-mobile-screen text-orange-400 text-xl"></i>
+              </div>
+              <div class="text-sm font-semibold text-white">Buy Airtime</div>
+              <div class="text-xs text-slate-500 mt-0.5">2% Discount</div>
+            </a>
+            <a href="education.php" class="service-card p-4 text-center group">
+              <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-500/30 transition-colors">
+                <i class="fa-solid fa-graduation-cap text-purple-400 text-xl"></i>
+              </div>
+              <div class="text-sm font-semibold text-white">Education</div>
+              <div class="text-xs text-slate-500 mt-0.5">WAEC/NECO</div>
+            </a>
+            <a href="electricity.php" class="service-card p-4 text-center group">
+              <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-yellow-500/30 transition-colors">
+                <i class="fa-solid fa-bolt text-yellow-400 text-xl"></i>
+              </div>
+              <div class="text-sm font-semibold text-white">Electricity</div>
+              <div class="text-xs text-slate-500 mt-0.5">All DISCOs</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          <div class="stat-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-receipt text-green-400 text-sm"></i>
+              </div>
+              <span class="text-slate-400 text-sm">Total Txns</span>
+            </div>
+            <div class="text-2xl font-extrabold text-white" id="stat-total" data-target="0">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-wifi text-blue-400 text-sm"></i>
+              </div>
+              <span class="text-slate-400 text-sm">Data Bought</span>
+            </div>
+            <div class="text-2xl font-extrabold text-white" id="stat-data" data-target="0">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-mobile-screen text-orange-400 text-sm"></i>
+              </div>
+              <span class="text-slate-400 text-sm">Airtime Bought</span>
+            </div>
+            <div class="text-2xl font-extrabold text-white" id="stat-airtime" data-target="0">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-9 h-9 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-naira-sign text-yellow-400 text-sm"></i>
+              </div>
+              <span class="text-slate-400 text-sm">Total Spent</span>
+            </div>
+            <div class="text-xl font-extrabold text-white" id="stat-spent" data-target="0">₦0</div>
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-slate-700">
+            <h3 class="font-bold text-white">Recent Transactions</h3>
+            <a href="transactions.php" class="text-sm text-green-400 hover:text-green-300 font-medium">View All</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="tx-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th class="hidden md:table-cell">Description</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recent-tx-body">
+                <tr><td colspan="5" class="text-center py-8 text-slate-500">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
