@@ -32,6 +32,7 @@
         <a href="dashboard.php" class="sidebar-link active">
           <i class="fa-solid fa-gauge-high"></i> Dashboard
         </a>
+        <a href="fund-account.php" class="sidebar-link"><i class="fa-solid fa-building-columns"></i> Fund Account</a>
         <a href="data.php" class="sidebar-link">
           <i class="fa-solid fa-wifi"></i> Buy Data
         </a>
@@ -97,7 +98,7 @@
             </div>
             <div id="wallet-balance" class="text-3xl font-extrabold text-white my-2 relative z-10">₦0.00</div>
             <button id="fund-wallet-btn" class="btn-primary text-sm px-4 py-2 mt-2 relative z-10">
-              <i class="fa-solid fa-plus mr-1.5"></i>Fund Wallet
+              <i class="fa-solid fa-building-columns mr-1.5"></i>Fund Account
             </button>
           </div>
 

@@ -396,6 +396,27 @@ body {
   border-radius: 50%;
 }
 
+/* ===================== Virtual Account card ===================== */
+.virtual-account-card {
+  background: linear-gradient(135deg, #0c4a2e 0%, #14352a 40%, #0f172a 100%);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.virtual-account-card::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -15%;
+  width: 250px;
+  height: 250px;
+  background: rgba(34,197,94,0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 /* ===================== Pricing table ===================== */
 .pricing-card {
   background: var(--bg-card);
