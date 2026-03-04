@@ -135,7 +135,8 @@ const Auth = {
   isLoggedIn() { return !!this.getUser(); },
   logout() {
     Store.remove('user');
-    window.location.href = 'login.html';
+    fetch('api/auth.php?action=logout', { method: 'POST' })
+      .finally(() => { window.location.href = 'login.php'; });
   },
 };
 
@@ -236,7 +237,7 @@ function initNavigation() {
 
   // Highlight active nav link
   const links = document.querySelectorAll('.nav-link');
-  const path = window.location.pathname.split('/').pop() || 'index.html';
+  const path = window.location.pathname.split('/').pop() || 'index.php';
   links.forEach(link => {
     const href = link.getAttribute('href');
     if (href && (href === path || href.endsWith(path))) {
@@ -335,6 +336,22 @@ function deductWallet(amount) {
   return true;
 }
 function fundWallet(amount) { setWalletBalance(getWalletBalance() + Number(amount)); }
+
+// ===================== API Helper =====================
+const API = {
+  async post(url, data) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return res.json();
+  },
+  async get(url) {
+    const res = await fetch(url);
+    return res.json();
+  },
+};
 
 // ===================== Init =====================
 document.addEventListener('DOMContentLoaded', () => {

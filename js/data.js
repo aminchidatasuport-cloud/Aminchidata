@@ -43,7 +43,7 @@ let selectedNetwork = null;
 let selectedPlan = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
 
   initNetworkButtons();
   initForm();
@@ -158,19 +158,28 @@ function initForm() {
     if (!confirmed) return;
 
     setButtonLoading(buyBtn, true);
-    await new Promise(r => setTimeout(r, 2000));
 
-    deductWallet(selectedPlan.price);
-    addTransaction({
-      type: 'Data',
-      description: `${selectedNetwork} ${selectedPlan.name} Data`,
-      amount: selectedPlan.price,
-      status: 'Success',
-      phone: phoneInput.value,
-    });
+    try {
+      const result = await API.post('api/data.php', {
+        network: selectedNetwork,
+        plan_name: selectedPlan.name,
+        price: selectedPlan.price,
+        phone: phoneInput.value,
+      });
 
-    setButtonLoading(buyBtn, false);
-    Toast.show(`${selectedNetwork} ${selectedPlan.name} data sent to ${phoneInput.value} successfully!`, 'success');
+      if (result.error) {
+        setButtonLoading(buyBtn, false);
+        Toast.show(result.error, 'error');
+        return;
+      }
+
+      setButtonLoading(buyBtn, false);
+      Toast.show(result.message || `${selectedNetwork} ${selectedPlan.name} data sent to ${phoneInput.value} successfully!`, 'success');
+    } catch {
+      setButtonLoading(buyBtn, false);
+      Toast.show('Network error. Please try again.', 'error');
+      return;
+    }
 
     // Reset form
     form.reset();

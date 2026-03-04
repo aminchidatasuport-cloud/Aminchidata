@@ -12,7 +12,7 @@ const EDU_SERVICES = {
 let selectedService = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
 
   initServiceCards();
   initForm();
@@ -108,39 +108,30 @@ function initForm() {
     if (!confirmed) return;
 
     setButtonLoading(buyBtn, true);
-    await new Promise(r => setTimeout(r, 2500));
 
-    deductWallet(total);
-
-    // Generate mock pins
-    const pins = [];
-    for (let i = 0; i < qty; i++) {
-      pins.push({
-        id: `PIN-${Date.now()}-${i}`,
+    try {
+      const result = await API.post('api/education.php', {
         service: selectedService,
-        pin: generatePin(),
-        serial: generateSerial(),
-        purchasedAt: new Date().toISOString(),
+        quantity: qty,
       });
+
+      if (result.error) {
+        setButtonLoading(buyBtn, false);
+        Toast.show(result.error, 'error');
+        return;
+      }
+
+      setButtonLoading(buyBtn, false);
+
+      // Show pins from API response
+      const pins = result.pins || [];
+      showPinsModal(pins, info.name);
+      loadPurchasedPins();
+    } catch {
+      setButtonLoading(buyBtn, false);
+      Toast.show('Network error. Please try again.', 'error');
+      return;
     }
-
-    // Save pins to store
-    const storedPins = Store.get('edu_pins', []);
-    Store.set('edu_pins', [...pins, ...storedPins]);
-
-    addTransaction({
-      type: 'Education',
-      description: `${info.name} Result Checker (×${qty})`,
-      amount: total,
-      status: 'Success',
-      phone: '',
-    });
-
-    setButtonLoading(buyBtn, false);
-
-    // Show pins
-    showPinsModal(pins, info.name);
-    loadPurchasedPins();
 
     // Reset
     form.reset();
@@ -172,7 +163,7 @@ function showPinsModal(pins, serviceName) {
           <div class="bg-slate-900 border border-slate-700 rounded-lg p-3">
             <div class="flex justify-between items-center mb-1">
               <span class="text-xs text-slate-500">Serial Number</span>
-              <span class="text-xs text-slate-400 font-mono">${p.serial}</span>
+              <span class="text-xs text-slate-400 font-mono">${p.serial || p.serial_number}</span>
             </div>
             <div class="flex justify-between items-center">
               <span class="text-xs text-slate-500">PIN</span>
@@ -188,11 +179,17 @@ function showPinsModal(pins, serviceName) {
   overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
 }
 
-function loadPurchasedPins() {
+async function loadPurchasedPins() {
   const container = document.getElementById('pins-history');
   if (!container) return;
 
-  const pins = Store.get('edu_pins', []);
+  let pins;
+  try {
+    const data = await API.get('api/education.php?action=history');
+    pins = data.pins || [];
+  } catch {
+    pins = Store.get('edu_pins', []);
+  }
 
   if (pins.length === 0) {
     container.innerHTML = `<p class="text-slate-500 text-sm text-center py-4">No pins purchased yet.</p>`;
@@ -212,9 +209,9 @@ function loadPurchasedPins() {
           ${pins.slice(0, 10).map(p => `
             <tr>
               <td><span class="badge badge-success">${p.service}</span></td>
-              <td class="font-mono text-sm text-slate-400">${p.serial}</td>
+              <td class="font-mono text-sm text-slate-400">${p.serial || p.serial_number}</td>
               <td class="font-mono font-bold text-green-400 tracking-wider">${p.pin}</td>
-              <td class="text-slate-400 text-sm">${formatDateShort(p.purchasedAt)}</td>
+              <td class="text-slate-400 text-sm">${formatDateShort(p.purchasedAt || p.created_at)}</td>
             </tr>`).join('')}
         </tbody>
       </table>

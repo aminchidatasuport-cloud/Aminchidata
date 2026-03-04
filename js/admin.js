@@ -9,7 +9,7 @@ const AdminAuth = {
   isAdminLoggedIn() { return !!this.getAdmin(); },
   logout() {
     Store.remove('admin_user');
-    window.location.href = 'admin-login.html';
+    window.location.href = 'admin-login.php';
   }
 };
 
@@ -26,7 +26,7 @@ const ITEMS_PER_PAGE = 10;
 // ===================== Init =====================
 document.addEventListener('DOMContentLoaded', () => {
   // Redirect if not admin logged in
-  if (!AdminAuth.isAdminLoggedIn()) { window.location.href = 'admin-login.html'; return; }
+  if (!AdminAuth.isAdminLoggedIn()) { window.location.href = 'admin-login.php'; return; }
 
   initAdminSidebar();
   initAdminNav();

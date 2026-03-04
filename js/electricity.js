@@ -18,7 +18,7 @@ const MOCK_CUSTOMERS = {
 let meterType = 'prepaid';
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
 
   populateDiscos();
   initMeterToggle();
@@ -87,14 +87,24 @@ function initMeterVerify() {
     }
 
     setButtonLoading(verifyBtn, true);
-    await new Promise(r => setTimeout(r, 1500));
-    setButtonLoading(verifyBtn, false, 'Verify');
 
-    // Mock verification
-    const customer = MOCK_CUSTOMERS[meter] || {
-      name: 'Customer ' + meter.slice(-4),
-      address: 'Address not available',
-    };
+    let customer;
+    try {
+      const data = await API.get('api/electricity.php?action=verify&meter=' + encodeURIComponent(meter));
+      setButtonLoading(verifyBtn, false, 'Verify');
+      if (data.error) {
+        Toast.show(data.error, 'error');
+        return;
+      }
+      customer = data.customer || { name: 'Customer ' + meter.slice(-4), address: 'Address not available' };
+    } catch {
+      setButtonLoading(verifyBtn, false, 'Verify');
+      // Fallback to mock verification
+      customer = MOCK_CUSTOMERS[meter] || {
+        name: 'Customer ' + meter.slice(-4),
+        address: 'Address not available',
+      };
+    }
 
     if (customerName) customerName.textContent = customer.name;
     if (customerAddr) customerAddr.textContent = customer.address;
@@ -158,26 +168,33 @@ function initForm() {
     if (!confirmed) return;
 
     setButtonLoading(payBtn, true);
-    await new Promise(r => setTimeout(r, 2500));
 
-    deductWallet(amount);
-    addTransaction({
-      type: 'Electricity',
-      description: `${disco} ${meterType.charAt(0).toUpperCase() + meterType.slice(1)}`,
-      amount,
-      status: 'Success',
-      phone: meter,
-    });
+    try {
+      const result = await API.post('api/electricity.php', {
+        disco,
+        meter_type: meterType,
+        meter,
+        amount,
+      });
 
-    // Generate token for prepaid
-    let successMsg = `Electricity payment of ${formatCurrency(amount)} to ${disco} was successful!`;
-    if (meterType === 'prepaid') {
-      const token = Array.from({ length: 4 }, () => Math.floor(Math.random() * 9000 + 1000)).join('-');
-      successMsg += ` Token: ${token}`;
+      if (result.error) {
+        setButtonLoading(payBtn, false);
+        Toast.show(result.error, 'error');
+        return;
+      }
+
+      let successMsg = result.message || `Electricity payment of ${formatCurrency(amount)} to ${disco} was successful!`;
+      if (result.token) {
+        successMsg += ` Token: ${result.token}`;
+      }
+
+      setButtonLoading(payBtn, false);
+      await Modal.alert({ title: 'Payment Successful! ✅', message: successMsg });
+    } catch {
+      setButtonLoading(payBtn, false);
+      Toast.show('Network error. Please try again.', 'error');
+      return;
     }
-
-    setButtonLoading(payBtn, false);
-    await Modal.alert({ title: 'Payment Successful! ✅', message: successMsg });
 
     form.reset();
     const customerBox = document.getElementById('customer-info');

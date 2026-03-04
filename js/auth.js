@@ -6,14 +6,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname.split('/').pop();
 
-  if (path === 'login.html') initLogin();
-  else if (path === 'register.html') initRegister();
+  if (path === 'login.php') initLogin();
+  else if (path === 'register.php') initRegister();
 });
 
 // ===================== Login =====================
 function initLogin() {
   // Redirect if already logged in
-  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.html'; return; }
+  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.php'; return; }
 
   const form = document.getElementById('login-form');
   if (!form) return;
@@ -46,32 +46,30 @@ function initLogin() {
 
     setButtonLoading(submitBtn, true);
 
-    // Simulate API call
-    await delay(1500);
+    const result = await API.post('api/auth.php?action=login', {
+      email: emailInput.value.trim(),
+      password: passInput.value,
+    });
 
-    // Check stored users
-    const users = Store.get('users', []);
-    const user = users.find(u => u.email.toLowerCase() === emailInput.value.trim().toLowerCase());
-
-    if (!user || user.password !== passInput.value) {
+    if (result.error) {
       setButtonLoading(submitBtn, false);
-      Toast.show('Invalid email or password. Try demo@aminchidata.com / password123', 'error');
+      Toast.show(result.error, 'error');
       return;
     }
 
-    // Save session
-    Store.set('user', { id: user.id, name: user.name, email: user.email, phone: user.phone });
+    // Save to localStorage for UI state
+    Store.set('user', result.user);
 
     // Remember me
     const rememberMe = document.getElementById('remember-me');
     if (rememberMe && rememberMe.checked) {
-      Store.set('remember_email', user.email);
+      Store.set('remember_email', result.user.email);
     } else {
       Store.remove('remember_email');
     }
 
-    Toast.show(`Welcome back, ${user.name.split(' ')[0]}!`, 'success');
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
+    Toast.show(`Welcome back, ${result.user.name.split(' ')[0]}!`, 'success');
+    setTimeout(() => { window.location.href = 'dashboard.php'; }, 800);
   });
 
   // Pre-fill remembered email
@@ -82,13 +80,11 @@ function initLogin() {
     if (rememberMe) rememberMe.checked = true;
   }
 
-  // Seed demo user if none exist
-  seedDemoUser();
 }
 
 // ===================== Register =====================
 function initRegister() {
-  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.html'; return; }
+  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.php'; return; }
 
   const form = document.getElementById('register-form');
   if (!form) return;
@@ -148,54 +144,28 @@ function initRegister() {
     if (!ok) return;
 
     setButtonLoading(submitBtn, true);
-    await delay(1500);
 
-    // Check for duplicate email
-    const users = Store.get('users', []);
-    if (users.find(u => u.email.toLowerCase() === emailInput.value.trim().toLowerCase())) {
+    const result = await API.post('api/auth.php?action=register', {
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      password: passInput.value,
+    });
+
+    if (result.error) {
       setButtonLoading(submitBtn, false);
-      Toast.show('An account with this email already exists.', 'error');
+      Toast.show(result.error, 'error');
       return;
     }
 
-    // Create user
-    const newUser = {
-      id: 'USR' + Date.now(),
-      name: nameInput.value.trim(),
-      email: emailInput.value.trim().toLowerCase(),
-      phone: phoneInput.value.trim(),
-      password: passInput.value,
-      createdAt: new Date().toISOString(),
-    };
-
-    users.push(newUser);
-    Store.set('users', users);
-
-    // Auto-login
-    Store.set('user', { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone });
-
-    // Set starting wallet balance
-    Store.set('wallet_balance', 500);
+    Store.set('user', result.user);
 
     Toast.show('Account created successfully! Welcome to AminchiData!', 'success');
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
+    setTimeout(() => { window.location.href = 'dashboard.php'; }, 1000);
   });
 }
 
 // ===================== Helpers =====================
 function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-function seedDemoUser() {
-  const users = Store.get('users', []);
-  if (!users.find(u => u.email === 'demo@aminchidata.com')) {
-    users.push({
-      id: 'USR_DEMO',
-      name: 'Demo User',
-      email: 'demo@aminchidata.com',
-      phone: '08012345678',
-      password: 'password123',
-      createdAt: '2024-01-01T00:00:00.000Z',
-    });
-    Store.set('users', users);
-  }
-}
+
