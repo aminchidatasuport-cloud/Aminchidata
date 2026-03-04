@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/katpay.php';
 
 header('Content-Type: application/json');
 initSession();
@@ -37,6 +38,27 @@ switch ($action) {
         $newBalance = getWalletBalance($userId);
 
         jsonResponse(['success' => true, 'balance' => $newBalance]);
+        break;
+
+    case 'virtual_account':
+        // Return the user's Katpay virtual account, creating it if it doesn't exist yet.
+        $account = getVirtualAccount($userId);
+        if (!$account) {
+            $user = currentUser();
+            if ($user) {
+                createKatpayVirtualAccount($userId, $user['name'], $user['email'], $user['phone']);
+                $account = getVirtualAccount($userId);
+            }
+        }
+        if (!$account) {
+            jsonResponse(['error' => 'Virtual account not available. Please try again later.'], 503);
+        }
+        jsonResponse([
+            'account_number' => $account['account_number'],
+            'account_name'   => $account['account_name'],
+            'bank_name'      => $account['bank_name'],
+            'bank_code'      => $account['bank_code'],
+        ]);
         break;
 
     default:
