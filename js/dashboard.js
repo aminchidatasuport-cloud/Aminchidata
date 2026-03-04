@@ -336,7 +336,6 @@ async function handlePaystackPayment(overlay) {
     if (typeof PaystackPop !== 'undefined' && initResult.access_code) {
       const popup = new PaystackPop();
       popup.openIframe({
-        key: initResult.access_code,
         access_code: initResult.access_code,
         onSuccess: async (transaction) => {
           overlay.remove();
@@ -413,6 +412,6 @@ async function checkPaymentCallback() {
   const cleanUrl = window.location.pathname;
   window.history.replaceState({}, document.title, cleanUrl);
 
-  Toast.show('Verifying your payment...', 'info', 6000);
+  Toast.show('Verifying your payment...', 'info');
   await verifyPaystackPayment(ref);
 }

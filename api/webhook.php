@@ -100,7 +100,7 @@ function handleKatpayWebhook(string $rawBody): void
             exit;
         }
     } else {
-        $reference = 'KAT_WH_' . time() . '_' . bin2hex(random_bytes(4));
+        $reference = generatePaymentReference('KAT_WH');
     }
 
     // Credit the user's wallet

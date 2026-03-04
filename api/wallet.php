@@ -94,6 +94,9 @@ switch ($action) {
 
         // Check if this payment has already been processed
         $existingPayment = getPaymentByReference($reference);
+        if ($existingPayment && (int)$existingPayment['user_id'] !== $userId) {
+            jsonResponse(['error' => 'Payment reference does not belong to this account.'], 403);
+        }
         if ($existingPayment && $existingPayment['status'] === 'success') {
             jsonResponse([
                 'success' => true,
