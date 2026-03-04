@@ -38,10 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sidebar toggle
   initSidebar();
 
-  // Fund Wallet modal
+  // Fund Wallet – navigate to Fund Account page
   const fundBtn = document.getElementById('fund-wallet-btn');
   if (fundBtn) {
-    fundBtn.addEventListener('click', showFundWalletModal);
+    fundBtn.addEventListener('click', () => {
+      window.location.href = 'fund-account.html';
+    });
   }
 
   // Logout
@@ -153,55 +155,4 @@ function initSidebar() {
   }
 }
 
-async function showFundWalletModal() {
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.innerHTML = `
-    <div class="modal-box max-w-sm">
-      <h3 class="text-xl font-bold mb-1 text-white">Fund Wallet</h3>
-      <p class="text-slate-400 text-sm mb-5">Enter the amount you want to add to your wallet.</p>
 
-      <div class="field-wrap mb-4">
-        <label class="block text-sm font-medium text-slate-300 mb-1.5">Amount (₦)</label>
-        <input id="fund-amount" type="number" min="100" placeholder="e.g. 5000" class="form-input"/>
-      </div>
-
-      <div class="flex gap-3 justify-end mt-4">
-        <button id="fund-cancel" class="btn-outline px-5 py-2.5 text-sm">Cancel</button>
-        <button id="fund-confirm" class="btn-primary px-5 py-2.5 text-sm">Add Funds</button>
-      </div>
-    </div>`;
-
-  document.body.appendChild(overlay);
-
-  overlay.querySelector('#fund-cancel').addEventListener('click', () => overlay.remove());
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-
-  overlay.querySelector('#fund-confirm').addEventListener('click', async () => {
-    const amtInput = overlay.querySelector('#fund-amount');
-    const amount = parseFloat(amtInput.value);
-
-    if (!amount || amount < 100) {
-      Toast.show('Enter a valid amount (minimum ₦100)', 'warning');
-      return;
-    }
-
-    const btn = overlay.querySelector('#fund-confirm');
-    setButtonLoading(btn, true);
-
-    try {
-      const result = await API.post('api/wallet.php?action=fund', { amount });
-      if (result.error) {
-        setButtonLoading(btn, false);
-        Toast.show(result.error, 'error');
-        return;
-      }
-    } catch {
-      fundWallet(amount);
-    }
-
-    overlay.remove();
-    updateWalletDisplay();
-    Toast.show(`₦${amount.toLocaleString()} added to your wallet!`, 'success');
-  });
-}
