@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (retryBtn) retryBtn.addEventListener('click', loadVirtualAccount);
 });
 
+let copyListenerAttached = false;
+
 async function loadVirtualAccount() {
   const loadingEl = document.getElementById('va-loading');
   const detailsEl = document.getElementById('va-details');
@@ -58,11 +60,13 @@ async function loadVirtualAccount() {
     if (loadingEl) loadingEl.classList.add('hidden');
     if (detailsEl) detailsEl.classList.remove('hidden');
 
-    // Copy button
+    // Copy button (attach listener only once)
     const copyBtn = document.getElementById('copy-account-btn');
-    if (copyBtn && data.account_number) {
+    if (copyBtn && data.account_number && !copyListenerAttached) {
+      copyListenerAttached = true;
       copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(data.account_number).then(() => {
+        const acctNum = document.getElementById('va-account-number').textContent;
+        navigator.clipboard.writeText(acctNum).then(() => {
           Toast.show('Account number copied!', 'success');
           copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
           setTimeout(() => {
@@ -71,7 +75,7 @@ async function loadVirtualAccount() {
         }).catch(() => {
           // Fallback for older browsers
           const textArea = document.createElement('textarea');
-          textArea.value = data.account_number;
+          textArea.value = acctNum;
           textArea.style.position = 'fixed';
           textArea.style.left = '-9999px';
           document.body.appendChild(textArea);
@@ -86,7 +90,8 @@ async function loadVirtualAccount() {
         });
       });
     }
-  } catch {
+  } catch (error) {
+    console.error('Failed to load virtual account:', error);
     // Show error state
     if (loadingEl) loadingEl.classList.add('hidden');
     if (errorEl)   errorEl.classList.remove('hidden');
