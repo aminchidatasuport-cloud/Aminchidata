@@ -10,7 +10,7 @@ let filteredTxns = [];
 let totalFilteredCount = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
 
   initFilters();
   loadTransactions();

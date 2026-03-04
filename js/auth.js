@@ -6,14 +6,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname.split('/').pop();
 
-  if (path === 'login.php') initLogin();
-  else if (path === 'register.php') initRegister();
+  if (path === 'login.php' || path === 'login.html') initLogin();
+  else if (path === 'register.php' || path === 'register.html') initRegister();
 });
 
 // ===================== Login =====================
 function initLogin() {
   // Redirect if already logged in
-  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.php'; return; }
+  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.html'; return; }
 
   const form = document.getElementById('login-form');
   if (!form) return;
@@ -46,10 +46,21 @@ function initLogin() {
 
     setButtonLoading(submitBtn, true);
 
-    const result = await API.post('api/auth.php?action=login', {
-      email: emailInput.value.trim(),
-      password: passInput.value,
-    });
+    let result;
+    try {
+      result = await API.post('api/auth.php?action=login', {
+        email: emailInput.value.trim(),
+        password: passInput.value,
+      });
+    } catch {
+      // Backend unavailable — use client-side auth fallback
+      const localUser = await LocalUsers.authenticate(emailInput.value.trim(), passInput.value);
+      if (localUser) {
+        result = { success: true, user: localUser };
+      } else {
+        result = { error: 'Invalid email or password.' };
+      }
+    }
 
     if (result.error) {
       setButtonLoading(submitBtn, false);
@@ -69,7 +80,7 @@ function initLogin() {
     }
 
     Toast.show(`Welcome back, ${result.user.name.split(' ')[0]}!`, 'success');
-    setTimeout(() => { window.location.href = 'dashboard.php'; }, 800);
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 800);
   });
 
   // Pre-fill remembered email
@@ -84,7 +95,7 @@ function initLogin() {
 
 // ===================== Register =====================
 function initRegister() {
-  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.php'; return; }
+  if (Auth.isLoggedIn()) { window.location.href = 'dashboard.html'; return; }
 
   const form = document.getElementById('register-form');
   if (!form) return;
@@ -145,12 +156,23 @@ function initRegister() {
 
     setButtonLoading(submitBtn, true);
 
-    const result = await API.post('api/auth.php?action=register', {
-      name: nameInput.value.trim(),
-      email: emailInput.value.trim(),
-      phone: phoneInput.value.trim(),
-      password: passInput.value,
-    });
+    let result;
+    try {
+      result = await API.post('api/auth.php?action=register', {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        phone: phoneInput.value.trim(),
+        password: passInput.value,
+      });
+    } catch {
+      // Backend unavailable — use client-side registration fallback
+      result = await LocalUsers.create(
+        nameInput.value.trim(),
+        emailInput.value.trim(),
+        phoneInput.value.trim(),
+        passInput.value
+      );
+    }
 
     if (result.error) {
       setButtonLoading(submitBtn, false);
@@ -161,7 +183,7 @@ function initRegister() {
     Store.set('user', result.user);
 
     Toast.show('Account created successfully! Welcome to AminchiData!', 'success');
-    setTimeout(() => { window.location.href = 'dashboard.php'; }, 1000);
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
   });
 }
 

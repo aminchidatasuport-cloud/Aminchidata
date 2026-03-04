@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // Redirect if not logged in
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
 
   const user = Auth.getUser();
 
