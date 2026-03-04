@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel – AminchiData</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-10 lg:hidden sidebar-overlay"></div>
+
+  <div class="flex min-h-screen">
+    <!-- =================== SIDEBAR =================== -->
+    <aside id="sidebar" class="sidebar flex flex-col z-20">
+      <!-- Logo -->
+      <div class="p-5 border-b border-slate-700">
+        <a href="admin.html" class="flex items-center gap-2">
+          <div class="w-9 h-9 bg-green-500 rounded-lg flex items-center justify-center">
+            <i class="fa-solid fa-shield-halved text-white"></i>
+          </div>
+          <span class="text-xl font-extrabold"><span class="text-white">Aminchi</span><span class="text-green-400">Data</span></span>
+          <span class="text-[10px] bg-red-500/20 text-red-400 font-bold px-1.5 py-0.5 rounded ml-1">Admin</span>
+        </a>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="flex-1 p-4 space-y-1">
+        <a class="sidebar-link active" data-section="dashboard">
+          <i class="fa-solid fa-gauge-high"></i> Dashboard
+        </a>
+        <a class="sidebar-link" data-section="users">
+          <i class="fa-solid fa-users"></i> Users
+        </a>
+        <a class="sidebar-link" data-section="transactions">
+          <i class="fa-solid fa-receipt"></i> Transactions
+        </a>
+        <a class="sidebar-link" data-section="settings">
+          <i class="fa-solid fa-gear"></i> Settings
+        </a>
+
+        <div class="border-t border-slate-700 my-3"></div>
+
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="fa-solid fa-arrow-left"></i> Back to Site
+        </a>
+      </nav>
+
+      <!-- Logout -->
+      <div class="p-4 border-t border-slate-700">
+        <button id="admin-logout-btn" class="sidebar-link w-full text-red-400 hover:bg-red-500/10 hover:text-red-400">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- =================== MAIN CONTENT =================== -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Top Bar -->
+      <header class="bg-slate-800/70 border-b border-slate-700 px-4 sm:px-6 py-3.5 flex items-center gap-3 sticky top-0 z-10">
+        <button id="sidebar-toggle" class="lg:hidden text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-700">
+          <i class="fa-solid fa-bars text-lg"></i>
+        </button>
+        <h1 id="admin-page-title" class="font-semibold text-white text-lg">Dashboard</h1>
+        <div class="ml-auto flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <span class="text-sm text-slate-300 hidden sm:block">Admin</span>
+          </div>
+          <button id="logout-btn-mobile" class="text-sm text-slate-400 hover:text-red-400 transition-colors p-1.5">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+
+        <!-- ===== Section: Dashboard ===== -->
+        <div id="section-dashboard">
+          <!-- Welcome banner -->
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-white">Admin Dashboard</h2>
+            <p class="text-slate-400 text-sm mt-1">Overview of your platform</p>
+          </div>
+
+          <!-- 4 Stat Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Total Users -->
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                  <i class="fa-solid fa-users text-blue-400 text-sm"></i>
+                </div>
+                <span class="text-slate-400 text-sm">Total Users</span>
+              </div>
+              <div class="text-2xl font-extrabold text-white" id="admin-stat-users">0</div>
+            </div>
+            <!-- Total Transactions -->
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <i class="fa-solid fa-receipt text-green-400 text-sm"></i>
+                </div>
+                <span class="text-slate-400 text-sm">Total Transactions</span>
+              </div>
+              <div class="text-2xl font-extrabold text-white" id="admin-stat-transactions">0</div>
+            </div>
+            <!-- Total Revenue -->
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                  <i class="fa-solid fa-naira-sign text-yellow-400 text-sm"></i>
+                </div>
+                <span class="text-slate-400 text-sm">Total Revenue</span>
+              </div>
+              <div class="text-2xl font-extrabold text-white" id="admin-stat-revenue">0</div>
+            </div>
+            <!-- Active Users -->
+            <div class="stat-card">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-9 h-9 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <i class="fa-solid fa-user-check text-purple-400 text-sm"></i>
+                </div>
+                <span class="text-slate-400 text-sm">Active Users</span>
+              </div>
+              <div class="text-2xl font-extrabold text-white" id="admin-stat-active">0</div>
+            </div>
+          </div>
+
+          <!-- Two tables side by side -->
+          <div class="grid lg:grid-cols-2 gap-6">
+            <!-- Recent Transactions -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+              <div class="px-5 py-4 border-b border-slate-700">
+                <h3 class="font-bold text-white">Recent Transactions</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="tx-table">
+                  <thead>
+                    <tr><th>Date</th><th>Type</th><th class="hidden md:table-cell">Description</th><th>Amount</th><th>Status</th></tr>
+                  </thead>
+                  <tbody id="admin-recent-txns">
+                    <tr><td colspan="5" class="text-center py-8 text-slate-500">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Recent Users -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+              <div class="px-5 py-4 border-b border-slate-700">
+                <h3 class="font-bold text-white">Recent Users</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="tx-table">
+                  <thead>
+                    <tr><th>Name</th><th>Email</th><th class="hidden md:table-cell">Phone</th><th>Joined</th></tr>
+                  </thead>
+                  <tbody id="admin-recent-users">
+                    <tr><td colspan="4" class="text-center py-8 text-slate-500">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Section: Users ===== -->
+        <div id="section-users" class="hidden">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white">User Management</h2>
+            <p class="text-slate-400 text-sm mt-1">Manage all registered users</p>
+          </div>
+
+          <!-- Search + Count -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+            <div class="relative w-full sm:w-80">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+              <input id="user-search" type="text" placeholder="Search by name, email or phone..." class="form-input pl-10 text-sm" />
+            </div>
+            <span id="user-count-label" class="text-sm text-slate-500"></span>
+          </div>
+
+          <!-- Users Table -->
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="tx-table">
+                <thead>
+                  <tr><th>Name</th><th>Email</th><th class="hidden md:table-cell">Phone</th><th>Joined</th><th>Wallet</th><th class="text-right">Actions</th></tr>
+                </thead>
+                <tbody id="admin-users-tbody">
+                  <tr><td colspan="6" class="text-center py-8 text-slate-500">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="user-pagination" class="px-5 py-4 border-t border-slate-700 flex justify-center"></div>
+          </div>
+        </div>
+
+        <!-- ===== Section: Transactions ===== -->
+        <div id="section-transactions" class="hidden">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white">Transaction Management</h2>
+            <p class="text-slate-400 text-sm mt-1">View and manage all transactions</p>
+          </div>
+
+          <!-- Filters -->
+          <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3 mb-6">
+            <div class="relative w-full sm:w-64">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+              <input id="txn-search" type="text" placeholder="Search transactions..." class="form-input pl-10 text-sm" />
+            </div>
+            <select id="txn-filter-type" class="form-input text-sm w-auto">
+              <option value="All">All Types</option>
+              <option value="Data">Data</option>
+              <option value="Airtime">Airtime</option>
+              <option value="Education">Education</option>
+              <option value="Electricity">Electricity</option>
+            </select>
+            <select id="txn-filter-status" class="form-input text-sm w-auto">
+              <option value="All">All Status</option>
+              <option value="Success">Success</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+            </select>
+            <span id="txn-count-label" class="text-sm text-slate-500 sm:ml-auto"></span>
+          </div>
+
+          <!-- Transactions Table -->
+          <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="tx-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th class="hidden lg:table-cell">Ref. ID</th>
+                    <th>Type</th>
+                    <th class="hidden md:table-cell">Description</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th class="hidden lg:table-cell">Phone</th>
+                    <th class="text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-txns-tbody">
+                  <tr><td colspan="8" class="text-center py-8 text-slate-500">Loading...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="txn-pagination" class="px-5 py-4 border-t border-slate-700 flex justify-center"></div>
+          </div>
+        </div>
+
+        <!-- ===== Section: Settings ===== -->
+        <div id="section-settings" class="hidden">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white">Platform Settings</h2>
+            <p class="text-slate-400 text-sm mt-1">Configure your platform preferences</p>
+          </div>
+
+          <div class="max-w-2xl space-y-6">
+            <!-- General Settings Card -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+              <h3 class="font-semibold text-white mb-4 pb-2 border-b border-slate-700">General</h3>
+              <div class="space-y-4">
+                <div class="field-wrap">
+                  <label class="block text-sm font-medium text-slate-300 mb-1.5">Platform Name</label>
+                  <input id="setting-platform-name" type="text" class="form-input" placeholder="AminchiData" />
+                </div>
+                <div class="field-wrap">
+                  <label class="block text-sm font-medium text-slate-300 mb-1.5">Support Email</label>
+                  <input id="setting-support-email" type="email" class="form-input" placeholder="support@aminchidata.com" />
+                </div>
+                <label class="flex items-center justify-between cursor-pointer">
+                  <div>
+                    <div class="text-sm font-medium text-white">Maintenance Mode</div>
+                    <div class="text-xs text-slate-500">When enabled, users cannot access the platform</div>
+                  </div>
+                  <input type="checkbox" id="setting-maintenance" class="w-5 h-5 accent-green-500" />
+                </label>
+              </div>
+            </div>
+
+            <!-- Pricing Settings Card -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+              <h3 class="font-semibold text-white mb-4 pb-2 border-b border-slate-700">Pricing</h3>
+              <div class="space-y-4">
+                <div class="field-wrap">
+                  <label class="block text-sm font-medium text-slate-300 mb-1.5">Data Pricing Markup (%)</label>
+                  <input id="setting-data-markup" type="number" class="form-input" placeholder="e.g. 5" min="0" max="100" />
+                </div>
+                <div class="field-wrap">
+                  <label class="block text-sm font-medium text-slate-300 mb-1.5">Airtime Discount (%)</label>
+                  <input id="setting-airtime-discount" type="number" class="form-input" placeholder="e.g. 2" min="0" max="100" />
+                </div>
+              </div>
+            </div>
+
+            <button id="save-settings-btn" class="btn-primary px-6 py-2.5 text-sm">
+              <i class="fa-solid fa-floppy-disk mr-1.5"></i>Save Settings
+            </button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

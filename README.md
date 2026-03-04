@@ -27,6 +27,7 @@
 - **Electricity** — DISCO selection, prepaid/postpaid toggle, meter verification, token generation
 - **Transaction History** — Filterable table with pagination and status badges
 - **Profile / Settings** — Edit personal info, change password, notification preferences, bank details
+- **Admin Panel** — Separate admin login, dashboard overview, user management (search, adjust wallets, delete), transaction management (filter, search, update status), platform settings
 - **Toast Notifications** — Animated success / error / info / warning toasts
 - **Modal Dialogs** — Confirmation modals before purchases
 - **Fully Responsive** — Mobile-first design, sidebar drawer on mobile
@@ -61,6 +62,8 @@ Aminchidata/
 ├── electricity.html    # Electricity bill payment
 ├── transactions.html   # Transaction history
 ├── profile.html        # Profile & settings
+├── admin-login.html    # Admin login page
+├── admin.html          # Admin panel (dashboard, users, transactions, settings)
 ├── css/
 │   └── style.css       # Custom styles (animations, components)
 └── js/
@@ -71,7 +74,8 @@ Aminchidata/
     ├── airtime.js      # Buy airtime page logic
     ├── education.js    # Education pins logic
     ├── electricity.js  # Electricity payment logic
-    └── transactions.js # Transaction history logic
+    ├── transactions.js # Transaction history logic
+    └── admin.js        # Admin panel logic
 ```
 
 ---
@@ -104,6 +108,12 @@ Email:    demo@aminchidata.com
 Password: password123
 ```
 
+### Admin Login
+```
+Email:    admin@aminchidata.com
+Password: admin123
+```
+
 ---
 
 ## 🌐 Deployment (GitHub Pages)
@@ -132,6 +142,8 @@ To deploy your own fork:
 | Electricity | [/electricity.html](https://aminchidatasuport-cloud.github.io/Aminchidata/electricity.html) |
 | Transactions | [/transactions.html](https://aminchidatasuport-cloud.github.io/Aminchidata/transactions.html) |
 | Profile | [/profile.html](https://aminchidatasuport-cloud.github.io/Aminchidata/profile.html) |
+| Admin Login | [/admin-login.html](https://aminchidatasuport-cloud.github.io/Aminchidata/admin-login.html) |
+| Admin Panel | [/admin.html](https://aminchidatasuport-cloud.github.io/Aminchidata/admin.html) |
 
 ---
 
