@@ -4,7 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
+  if (!Auth.isLoggedIn()) {
+    const ext = window.location.pathname.endsWith('.php') ? '.php' : '.html';
+    window.location.href = 'login' + ext;
+    return;
+  }
 
   const user = Auth.getUser();
   const avatarEl = document.getElementById('user-avatar-initial');
@@ -27,8 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const retryBtn = document.getElementById('va-retry-btn');
   if (retryBtn) retryBtn.addEventListener('click', loadVirtualAccount);
 });
-
-let copyListenerAttached = false;
 
 async function loadVirtualAccount() {
   const loadingEl = document.getElementById('va-loading');
@@ -60,10 +62,10 @@ async function loadVirtualAccount() {
     if (loadingEl) loadingEl.classList.add('hidden');
     if (detailsEl) detailsEl.classList.remove('hidden');
 
-    // Copy button (attach listener only once)
+    // Copy button (attach listener only once via data attribute)
     const copyBtn = document.getElementById('copy-account-btn');
-    if (copyBtn && data.account_number && !copyListenerAttached) {
-      copyListenerAttached = true;
+    if (copyBtn && data.account_number && !copyBtn.dataset.listenerAttached) {
+      copyBtn.dataset.listenerAttached = 'true';
       copyBtn.addEventListener('click', () => {
         const acctNum = document.getElementById('va-account-number').textContent;
         navigator.clipboard.writeText(acctNum).then(() => {

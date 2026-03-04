@@ -56,6 +56,14 @@ function createKatpayVirtualAccount(int $userId, string $name, string $email, st
         return null;
     }
 
+    // Validate that the response contains at minimum an account number
+    $account = $data['data'] ?? $data;
+    $acctNumber = $account['accountNumber'] ?? ($account['account_number'] ?? '');
+    if (empty($acctNumber)) {
+        error_log(sprintf('[Katpay] Missing account number in API response for user %d: %s', $userId, $response));
+        return null;
+    }
+
     // Persist the virtual account in the database
     storeVirtualAccount($userId, $data, $response);
 

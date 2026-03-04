@@ -50,14 +50,17 @@ switch ($action) {
                 $account = getVirtualAccount($userId);
             }
         }
-        if (!$account) {
+        if (!$account || empty($account['account_number'])) {
             jsonResponse(['error' => 'Virtual account not available. Please try again later.'], 503);
+        }
+        if (empty($account['account_name']) || empty($account['bank_name'])) {
+            error_log(sprintf('[Wallet] Virtual account for user %d has incomplete data (name=%s, bank=%s)', $userId, $account['account_name'] ?? '', $account['bank_name'] ?? ''));
         }
         jsonResponse([
             'account_number' => $account['account_number'],
-            'account_name'   => $account['account_name'],
-            'bank_name'      => $account['bank_name'],
-            'bank_code'      => $account['bank_code'],
+            'account_name'   => $account['account_name'] ?: '',
+            'bank_name'      => $account['bank_name'] ?: '',
+            'bank_code'      => $account['bank_code'] ?: '',
         ]);
         break;
 

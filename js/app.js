@@ -136,7 +136,8 @@ const Auth = {
   logout() {
     Store.remove('user');
     fetch('api/auth.php?action=logout', { method: 'POST' }).catch(() => {});
-    window.location.href = 'login.html';
+    const ext = window.location.pathname.endsWith('.php') ? '.php' : '.html';
+    window.location.href = 'login' + ext;
   },
 };
 
