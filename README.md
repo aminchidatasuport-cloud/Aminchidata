@@ -2,6 +2,12 @@
 
 > Nigeria's most affordable VTU (Virtual Top-Up) and Bills Payment web application.
 
+## 🔗 Live Demo
+
+**👉 [https://aminchidatasuport-cloud.github.io/Aminchidata/](https://aminchidatasuport-cloud.github.io/Aminchidata/)**
+
+> **Demo Login:** `demo@aminchidata.com` / `password123`
+
 **AminchiData** is a fully responsive, client-side web application that enables Nigerian users to:
 - 📶 Buy affordable data bundles (MTN, Airtel, Glo, 9mobile)
 - 📱 Purchase airtime with 2% cashback discount
@@ -102,24 +108,30 @@ Password: password123
 
 ## 🌐 Deployment (GitHub Pages)
 
-1. Push this repository to GitHub.
-2. Go to **Settings → Pages**.
-3. Under **Source**, select `main` branch, root folder `/`.
-4. Click **Save**. Your site will be live at:
-   `https://<username>.github.io/Aminchidata/`
+The app is automatically deployed via GitHub Actions on every push to `main`.
+
+**Live URL:** [https://aminchidatasuport-cloud.github.io/Aminchidata/](https://aminchidatasuport-cloud.github.io/Aminchidata/)
+
+To deploy your own fork:
+1. Go to **Settings → Pages** in your fork.
+2. Under **Source**, select **GitHub Actions**.
+3. Push to `main` — the workflow in `.github/workflows/deploy.yml` will build and publish automatically.
 
 ---
 
 ## 📸 Screenshots
 
-| Page | Preview |
-|------|---------|
-| Landing Page | Hero section with services overview |
-| Dashboard | Wallet card, quick actions, recent transactions |
-| Buy Data | Network selection and plan cards |
-| Transactions | Filterable table with status badges |
-
-> Screenshots will be added after deployment.
+| Page | URL |
+|------|-----|
+| Landing Page | [/index.html](https://aminchidatasuport-cloud.github.io/Aminchidata/index.html) |
+| Login | [/login.html](https://aminchidatasuport-cloud.github.io/Aminchidata/login.html) |
+| Dashboard | [/dashboard.html](https://aminchidatasuport-cloud.github.io/Aminchidata/dashboard.html) |
+| Buy Data | [/data.html](https://aminchidatasuport-cloud.github.io/Aminchidata/data.html) |
+| Buy Airtime | [/airtime.html](https://aminchidatasuport-cloud.github.io/Aminchidata/airtime.html) |
+| Education Pins | [/education.html](https://aminchidatasuport-cloud.github.io/Aminchidata/education.html) |
+| Electricity | [/electricity.html](https://aminchidatasuport-cloud.github.io/Aminchidata/electricity.html) |
+| Transactions | [/transactions.html](https://aminchidatasuport-cloud.github.io/Aminchidata/transactions.html) |
+| Profile | [/profile.html](https://aminchidatasuport-cloud.github.io/Aminchidata/profile.html) |
 
 ---
 
