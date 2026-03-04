@@ -37,15 +37,6 @@ return [
         'secret'   => getenv('VTU_API_SECRET') ?: '',
     ],
 
-    // Katpay Virtual Account (https://katpay.co)
-    'katpay' => [
-        'api_key'     => getenv('KATPAY_API_KEY')     ?: '',
-        'api_secret'  => getenv('KATPAY_API_SECRET')  ?: '',
-        'merchant_id' => getenv('KATPAY_MERCHANT_ID') ?: '',
-        'base_url'    => 'https://api.katpay.co/v1',
-        'bank_codes'  => ['PALMPAY'],
-    ],
-
     // Default wallet balance for new users (Naira)
     'default_wallet_balance' => 500.00,
 ];
