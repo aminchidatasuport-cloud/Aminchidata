@@ -6,7 +6,6 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/katpay.php';
 
 header('Content-Type: application/json');
 initSession();
@@ -41,27 +40,8 @@ switch ($action) {
         break;
 
     case 'virtual_account':
-        // Return the user's Katpay virtual account, creating it if it doesn't exist yet.
-        $account = getVirtualAccount($userId);
-        if (!$account) {
-            $user = currentUser();
-            if ($user) {
-                createKatpayVirtualAccount($userId, $user['name'], $user['email'], $user['phone']);
-                $account = getVirtualAccount($userId);
-            }
-        }
-        if (!$account || empty($account['account_number'])) {
-            jsonResponse(['error' => 'Virtual account not available. Please try again later.'], 503);
-        }
-        if (empty($account['account_name']) || empty($account['bank_name'])) {
-            error_log(sprintf('[Wallet] Virtual account for user %d has incomplete data (name=%s, bank=%s)', $userId, $account['account_name'] ?? '', $account['bank_name'] ?? ''));
-        }
-        jsonResponse([
-            'account_number' => $account['account_number'],
-            'account_name'   => $account['account_name'] ?: '',
-            'bank_name'      => $account['bank_name'] ?: '',
-            'bank_code'      => $account['bank_code'] ?: '',
-        ]);
+        // Virtual account provider not yet configured.
+        jsonResponse(['error' => 'Virtual account service is not configured. Please try again later.'], 503);
         break;
 
     default:

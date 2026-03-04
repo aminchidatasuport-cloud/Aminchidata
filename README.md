@@ -233,47 +233,28 @@ To enable real payments, implement the verification callbacks in `api/wallet.php
 
 ---
 
-## 🏦 Wallet Funding with Katpay Virtual Accounts
+## 🏦 Wallet Funding with Virtual Accounts
 
-AminchiData integrates **Katpay** to give every user a dedicated virtual bank account for wallet top-up. When a user transfers money to their virtual account, the Katpay webhook credits their AminchiData wallet automatically.
+AminchiData supports dedicated virtual bank accounts for wallet top-up. When a virtual account provider is configured, each user receives a unique account number — transfers to that account automatically credit the user's wallet.
 
 ### How It Works
 
-1. **On Registration** — A Katpay virtual account (PalmPay) is automatically provisioned for each new user and stored in the `virtual_accounts` database table.
-2. **On-demand retrieval** — Users (or frontend code) can request their virtual account details at any time via:
+1. **Provider configuration** — Set up your chosen virtual account provider's API credentials as environment variables (see below).
+2. **On-demand retrieval** — Users can request their virtual account details at any time via:
    ```
    GET /api/wallet.php?action=virtual_account
    ```
    The response contains `account_number`, `account_name`, `bank_name`, and `bank_code`.
-3. **Transfer to fund** — The user transfers any amount to the returned account. Katpay reconciles the transfer and (via webhook) triggers wallet credit.
+3. **Transfer to fund** — The user transfers any amount to the returned account. The provider reconciles the transfer and (via webhook) triggers wallet credit.
 
 ### Key Files
 
 | File | Purpose |
 |------|---------|
-| `includes/katpay.php` | Katpay service functions (`createKatpayVirtualAccount`, `getVirtualAccount`) |
-| `includes/auth.php` | Calls `createKatpayVirtualAccount()` after every new user registration |
-| `api/wallet.php` | `?action=virtual_account` endpoint — returns stored account or creates one |
+| `api/wallet.php` | `?action=virtual_account` endpoint — returns stored account details |
 | `database/schema.sql` | `virtual_accounts` table definition |
-| `backend_integration/katpay_virtual_account.php` | Standalone admin/dev reference script |
 
-### Configuration
-
-Katpay credentials are stored server-side only in `config/app.php` and read from environment variables in production:
-
-| Environment Variable | Description |
-|---|---|
-| `KATPAY_API_KEY` | Katpay public API key |
-| `KATPAY_API_SECRET` | Katpay secret (Bearer token) |
-| `KATPAY_MERCHANT_ID` | Katpay merchant ID |
-
-```bash
-export KATPAY_API_KEY=pk_live_...
-export KATPAY_API_SECRET=eyJpdiI6...
-export KATPAY_MERCHANT_ID=KAT...
-```
-
-> **Security:** Never expose these credentials in frontend JavaScript or public HTML.
+> **Note:** The virtual account provider integration is currently a placeholder. Implement your provider's API calls in `api/wallet.php` and register a webhook endpoint to handle payment notifications.
 
 ---
 

@@ -5,7 +5,6 @@
  */
 
 require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/katpay.php';
 
 /**
  * Start a secure session if not already started.
@@ -108,9 +107,6 @@ function registerUser(string $name, string $email, string $phone, string $passwo
     $_SESSION['user_id'] = $userId;
     $_SESSION['user_name'] = $name;
     $_SESSION['user_email'] = $email;
-
-    // Provision a Katpay virtual account for wallet funding (failures are logged and do not abort registration)
-    createKatpayVirtualAccount((int)$userId, $name, $email, $phone);
 
     return ['success' => true, 'user' => ['id' => $userId, 'name' => $name, 'email' => $email, 'phone' => $phone]];
 }
