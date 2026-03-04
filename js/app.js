@@ -135,10 +135,62 @@ const Auth = {
   isLoggedIn() { return !!this.getUser(); },
   logout() {
     Store.remove('user');
-    fetch('api/auth.php?action=logout', { method: 'POST' })
-      .finally(() => { window.location.href = 'login.php'; });
+    fetch('api/auth.php?action=logout', { method: 'POST' }).catch(() => {});
+    window.location.href = 'login.html';
   },
 };
+
+// ===================== Local User Store (client-side fallback) =====================
+const LocalUsers = (() => {
+  const STORE_KEY = 'local_users';
+
+  // Seed with demo user on first load
+  function init() {
+    if (!Store.get(STORE_KEY)) {
+      Store.set(STORE_KEY, [
+        { id: 1, name: 'Demo User', email: 'demo@aminchidata.com', phone: '08012345678', password: 'password123', wallet_balance: 5000 },
+        { id: 2, name: 'Admin User', email: 'admin@aminchidata.com', phone: '08098765432', password: 'admin123', wallet_balance: 0 },
+      ]);
+    }
+  }
+
+  function getAll() {
+    init();
+    return Store.get(STORE_KEY, []);
+  }
+
+  function findByEmail(email) {
+    return getAll().find(u => u.email === email.toLowerCase().trim());
+  }
+
+  function create(name, email, phone, password) {
+    const users = getAll();
+    if (users.find(u => u.email === email.toLowerCase().trim())) {
+      return { success: false, error: 'An account with this email already exists.' };
+    }
+    const newUser = {
+      id: Date.now(),
+      name,
+      email: email.toLowerCase().trim(),
+      phone,
+      password,
+      wallet_balance: 500,
+    };
+    users.push(newUser);
+    Store.set(STORE_KEY, users);
+    return { success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, phone: newUser.phone } };
+  }
+
+  function authenticate(email, password) {
+    const user = findByEmail(email);
+    if (!user || user.password !== password) {
+      return null;
+    }
+    return { id: user.id, name: user.name, email: user.email, phone: user.phone };
+  }
+
+  return { init, findByEmail, create, authenticate };
+})();
 
 // ===================== Format Helpers =====================
 function formatCurrency(amount) {
@@ -237,7 +289,7 @@ function initNavigation() {
 
   // Highlight active nav link
   const links = document.querySelectorAll('.nav-link');
-  const path = window.location.pathname.split('/').pop() || 'index.php';
+  const path = window.location.pathname.split('/').pop() || 'index.html';
   links.forEach(link => {
     const href = link.getAttribute('href');
     if (href && (href === path || href.endsWith(path))) {
@@ -340,16 +392,34 @@ function fundWallet(amount) { setWalletBalance(getWalletBalance() + Number(amoun
 // ===================== API Helper =====================
 const API = {
   async post(url, data) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    return res.json();
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        throw new Error('Invalid JSON response');
+      }
+    } catch (err) {
+      throw err;
+    }
   },
   async get(url) {
-    const res = await fetch(url);
-    return res.json();
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        throw new Error('Invalid JSON response');
+      }
+    } catch (err) {
+      throw err;
+    }
   },
 };
 

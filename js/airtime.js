@@ -14,7 +14,7 @@ const NETWORK_PREFIXES = {
 let selectedAirtimeNetwork = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isLoggedIn()) { window.location.href = 'login.php'; return; }
+  if (!Auth.isLoggedIn()) { window.location.href = 'login.html'; return; }
 
   initNetworkButtons();
   initForm();
