@@ -196,6 +196,15 @@ function typeColorClass(type) {
   return map[type] || 'bg-slate-700 text-slate-300';
 }
 
+// ===================== Per-User Wallet Helpers =====================
+function getUserWallet(userId) {
+  return Store.get('wallet_' + userId, 5000);
+}
+
+function setUserWallet(userId, amount) {
+  Store.set('wallet_' + userId, amount);
+}
+
 // ===================== User Management Section =====================
 function initUserManagement() {
   const searchInput = document.getElementById('user-search');
@@ -260,7 +269,7 @@ function renderUserRows(users, page) {
       <td class="text-slate-300 text-sm">${u.email}</td>
       <td class="text-slate-400 text-sm hidden md:table-cell">${u.phone || '—'}</td>
       <td class="text-slate-400 text-sm whitespace-nowrap">${formatDateShort(u.createdAt)}</td>
-      <td class="text-slate-300 text-sm">${formatCurrency(getWalletBalance())}</td>
+      <td class="text-slate-300 text-sm">${formatCurrency(getUserWallet(u.id))}</td>
       <td class="text-right">
         <div class="flex items-center gap-2 justify-end">
           <button class="admin-adjust-wallet-btn text-xs bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 px-2.5 py-1.5 rounded-lg transition-colors" data-user-id="${u.id}">
@@ -319,7 +328,7 @@ async function showAdjustWalletModal(user) {
 
       <div class="field-wrap mb-4">
         <label class="block text-sm font-medium text-slate-300 mb-1.5">Current Balance</label>
-        <p class="text-green-400 font-semibold">${formatCurrency(getWalletBalance())}</p>
+        <p class="text-green-400 font-semibold">${formatCurrency(getUserWallet(user.id))}</p>
       </div>
 
       <div class="field-wrap mb-4">
@@ -360,17 +369,18 @@ async function showAdjustWalletModal(user) {
     setButtonLoading(btn, true);
     await new Promise(r => setTimeout(r, 1000));
 
+    const currentBalance = getUserWallet(user.id);
+
     if (action === 'add') {
-      fundWallet(amount);
+      setUserWallet(user.id, currentBalance + amount);
       Toast.show(`₦${amount.toLocaleString()} added to ${user.name}'s wallet`, 'success');
     } else {
-      const balance = getWalletBalance();
-      if (amount > balance) {
+      if (amount > currentBalance) {
         Toast.show('Insufficient wallet balance for deduction', 'error');
         setButtonLoading(btn, false);
         return;
       }
-      deductWallet(amount);
+      setUserWallet(user.id, currentBalance - amount);
       Toast.show(`₦${amount.toLocaleString()} deducted from ${user.name}'s wallet`, 'success');
     }
 
