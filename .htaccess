@@ -9,18 +9,15 @@
     RewriteRule ^(.+)\.html$ $1.php [L,R=301]
 </IfModule>
 
-# Deny access to config and include files directly
-<FilesMatch "\.(sql|log|env)$">
+# Deny access to config, include, and environment files directly
+<FilesMatch "\.(sql|log)$">
     Require all denied
 </FilesMatch>
 
-# Block .env files explicitly (including .env.example)
-<Files ".env">
+# Block all .env files (.env, .env.example, .env.local, etc.)
+<FilesMatch "^\.env">
     Require all denied
-</Files>
-<Files ".env.example">
-    Require all denied
-</Files>
+</FilesMatch>
 
 # Protect sensitive directories
 <IfModule mod_rewrite.c>
