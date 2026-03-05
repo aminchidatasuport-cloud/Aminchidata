@@ -47,18 +47,10 @@ if ($action === 'verify') {
 
     $apiResult = alrahuzValidateMeter($meter, $discoCode, $meterType);
 
-    if (isset($apiResult['error']) && !isset($apiResult['Customer_Name'])) {
-        // Fallback: return a generic customer for UX continuity
-        $customer = [
-            'name'    => $apiResult['Customer_Name'] ?? ('Customer ' . substr($meter, -4)),
-            'address' => $apiResult['Address'] ?? 'Address not available',
-        ];
-    } else {
-        $customer = [
-            'name'    => $apiResult['Customer_Name'] ?? $apiResult['name'] ?? ('Customer ' . substr($meter, -4)),
-            'address' => $apiResult['Address'] ?? $apiResult['address'] ?? 'Address not available',
-        ];
-    }
+    $customer = [
+        'name'    => $apiResult['Customer_Name'] ?? $apiResult['name'] ?? ('Customer ' . substr($meter, -4)),
+        'address' => $apiResult['Address'] ?? $apiResult['address'] ?? 'Address not available',
+    ];
 
     jsonResponse(['success' => true, 'customer' => $customer]);
     exit;

@@ -86,18 +86,15 @@ if (is_array($providerPins) && !empty($providerPins)) {
         'balance' => getWalletBalance($userId),
     ], 400);
 } else {
-    // Provider succeeded but returned pins in an unexpected format or as single pin
-    $pin    = $apiResult['pin'] ?? $apiResult['Pin'] ?? $apiResult['token'] ?? generatePin();
-    $serial = $apiResult['serial'] ?? $apiResult['Serial'] ?? $apiResult['serial_number'] ?? generateSerial();
-
+    // Provider succeeded but returned pin(s) in an unexpected format
     for ($i = 0; $i < $quantity; $i++) {
-        $currentPin    = ($quantity === 1) ? $pin : ($apiResult['pins'][$i]['pin'] ?? generatePin());
-        $currentSerial = ($quantity === 1) ? $serial : ($apiResult['pins'][$i]['serial'] ?? generateSerial());
+        $pin    = $apiResult['pin'] ?? $apiResult['Pin'] ?? $apiResult['token'] ?? generatePin();
+        $serial = $apiResult['serial'] ?? $apiResult['Serial'] ?? $apiResult['serial_number'] ?? generateSerial();
 
         $stmt = $db->prepare('INSERT INTO education_pins (user_id, service, pin, serial_number, created_at) VALUES (?, ?, ?, ?, NOW())');
-        $stmt->execute([$userId, $service, $currentPin, $currentSerial]);
+        $stmt->execute([$userId, $service, $pin, $serial]);
 
-        $pins[] = ['id' => $db->lastInsertId(), 'service' => $service, 'pin' => $currentPin, 'serial' => $currentSerial];
+        $pins[] = ['id' => $db->lastInsertId(), 'service' => $service, 'pin' => $pin, 'serial' => $serial];
     }
 }
 

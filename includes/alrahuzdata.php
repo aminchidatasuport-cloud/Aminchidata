@@ -95,9 +95,10 @@ function alrahuzCheckUser(): array
 function alrahuzBuyData(int $network, string $phone, int $planId): array
 {
     return alrahuzRequest('POST', '/api/data/', [
-        'network'      => $network,
+        'network'       => $network,
         'mobile_number' => $phone,
-        'plan'         => $planId,
+        'plan'          => $planId,
+        // Allow ported numbers (numbers moved to a different network)
         'Ported_number' => true,
     ]);
 }
@@ -136,6 +137,7 @@ function alrahuzBuyAirtime(int $network, string $phone, int $amount): array
         'network'       => $network,
         'mobile_number' => $phone,
         'amount'        => $amount,
+        // Allow ported numbers (numbers moved to a different network)
         'Ported_number' => true,
         'airtime_type'  => 'VTU',
     ]);
