@@ -42,6 +42,9 @@
         <a class="sidebar-link" data-section="settings">
           <i class="fa-solid fa-gear"></i> Settings
         </a>
+        <a class="sidebar-link" data-section="pricelist">
+          <i class="fa-solid fa-tags"></i> Price List
+        </a>
 
         <div class="border-t border-slate-700 my-3"></div>
 
@@ -306,6 +309,93 @@
             <button id="save-settings-btn" class="btn-primary px-6 py-2.5 text-sm">
               <i class="fa-solid fa-floppy-disk mr-1.5"></i>Save Settings
             </button>
+          </div>
+        </div>
+
+        <!-- ===== Section: Price List ===== -->
+        <div id="section-pricelist" class="hidden">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white">AlrahuzData Price List</h2>
+            <p class="text-slate-400 text-sm mt-1">Complete data plans, cable plans, recharge cards, and electricity companies from AlrahuzData</p>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex flex-wrap gap-2 mb-6">
+            <button class="pricelist-tab px-4 py-2 rounded-lg text-sm font-medium bg-green-500 text-white" data-pricelist-tab="data">Data Plans</button>
+            <button class="pricelist-tab px-4 py-2 rounded-lg text-sm font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-pricelist-tab="cable">Cable TV Plans</button>
+            <button class="pricelist-tab px-4 py-2 rounded-lg text-sm font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-pricelist-tab="recharge">Recharge Cards</button>
+            <button class="pricelist-tab px-4 py-2 rounded-lg text-sm font-medium bg-slate-700 text-slate-300 hover:bg-slate-600" data-pricelist-tab="electricity">Electricity (DISCOs)</button>
+          </div>
+
+          <!-- Data Plans Tab -->
+          <div id="pricelist-data" class="pricelist-content">
+            <!-- Network Filter -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              <select id="pricelist-network-filter" class="form-input text-sm w-auto">
+                <option value="All">All Networks</option>
+                <option value="MTN">MTN</option>
+                <option value="Airtel">Airtel</option>
+                <option value="Glo">Glo</option>
+                <option value="9mobile">9mobile</option>
+              </select>
+              <select id="pricelist-type-filter" class="form-input text-sm w-auto">
+                <option value="All">All Plan Types</option>
+              </select>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="tx-table">
+                  <thead>
+                    <tr><th>Data ID</th><th>Network</th><th>Plan Type</th><th>Size</th><th>Validity</th><th>Price</th></tr>
+                  </thead>
+                  <tbody id="pricelist-data-tbody">
+                    <tr><td colspan="6" class="text-center py-8 text-slate-500">Loading...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cable Plans Tab -->
+          <div id="pricelist-cable" class="pricelist-content hidden">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="tx-table">
+                  <thead>
+                    <tr><th>Plan ID</th><th>Provider</th><th>Plan Name</th><th>Price</th></tr>
+                  </thead>
+                  <tbody id="pricelist-cable-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recharge Cards Tab -->
+          <div id="pricelist-recharge" class="pricelist-content hidden">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="tx-table">
+                  <thead>
+                    <tr><th>Plan ID</th><th>Network</th><th>Amount</th></tr>
+                  </thead>
+                  <tbody id="pricelist-recharge-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Electricity Tab -->
+          <div id="pricelist-electricity" class="pricelist-content hidden">
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="tx-table">
+                  <thead>
+                    <tr><th>Disco ID</th><th>Distribution Company</th></tr>
+                  </thead>
+                  <tbody id="pricelist-electricity-tbody"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
 

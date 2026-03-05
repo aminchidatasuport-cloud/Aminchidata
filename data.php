@@ -91,6 +91,11 @@
               </div>
 
               <!-- Data Plans -->
+              <div id="plan-type-section" class="hidden mb-6">
+                <h3 class="font-semibold text-white mb-3">Select Plan Type</h3>
+                <div id="plan-type-buttons" class="flex flex-wrap gap-2 mb-6"></div>
+              </div>
+
               <div id="plans-section" class="hidden">
                 <h3 class="font-semibold text-white mb-3">Select Data Plan</h3>
                 <div id="plans-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6"></div>
@@ -113,6 +118,10 @@
                 <div class="flex justify-between">
                   <span class="text-slate-400">Network</span>
                   <span id="summary-network" class="font-medium text-white">—</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Plan Type</span>
+                  <span id="summary-plan-type" class="font-medium text-white">—</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-slate-400">Data Plan</span>

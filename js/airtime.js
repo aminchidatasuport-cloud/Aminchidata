@@ -4,6 +4,15 @@
  */
 
 const AIRTIME_DISCOUNT = { MTN: 2, Airtel: 2, Glo: 2, '9mobile': 2 };
+
+// Recharge card plan IDs from AlrahuzData
+const RECHARGE_PLAN_IDS = {
+  MTN:      { 100: 13, 200: 2, 500: 3, 1000: 20 },
+  Airtel:   { 100: 10, 200: 11, 500: 12, 1000: 21 },
+  Glo:      { 100: 4, 200: 5, 500: 6, 1000: 22 },
+  '9mobile':{ 100: 7, 200: 8 },
+};
+
 const NETWORK_PREFIXES = {
   MTN:      ['0703','0706','0803','0806','0810','0813','0814','0816','0903','0906','0913'],
   Airtel:   ['0701','0708','0802','0808','0812','0901','0902','0904','0907','0912'],
