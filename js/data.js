@@ -390,7 +390,7 @@ function renderPlans(network, planType) {
   const plans = networkPlans[planType] || [];
 
   container.innerHTML = plans.map(plan => `
-    <div class="plan-card" data-plan-id="${plan.id}" data-price="${plan.price}" data-name="${plan.size}" data-validity="${plan.validity}">
+    <div class="plan-card" data-plan-id="${plan.id}" data-price="${plan.price}" data-size="${plan.size}" data-validity="${plan.validity}">
       <div class="text-lg font-bold text-white">${plan.size}</div>
       <div class="text-xs text-slate-400 mt-0.5">${plan.validity}</div>
       <div class="text-green-400 font-bold mt-2 text-sm">${formatCurrency(plan.price)}</div>
@@ -404,7 +404,7 @@ function renderPlans(network, planType) {
       card.classList.add('selected');
       selectedPlan = {
         id: parseInt(card.dataset.planId, 10),
-        name: card.dataset.name,
+        name: card.dataset.size,
         price: parseFloat(card.dataset.price),
       };
       updateSummary();

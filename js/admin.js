@@ -974,7 +974,7 @@ const ALRAHUZ_CABLE_PLANS = {
     { id: 31, name: 'DStv Compact Plus + Extra View', price: 36000 },
     { id: 33, name: 'ExtraView Access', price: 6000 },
   ],
-  STARTIME: [
+  Startimes: [
     { id: 14, name: 'Nova - 1 Month', price: 2100 },
     { id: 12, name: 'Basic - 1 Month', price: 4000 },
     { id: 13, name: 'Smart - 1 Month', price: 5100 },
