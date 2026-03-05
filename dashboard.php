@@ -45,6 +45,9 @@
         <a href="electricity.php" class="sidebar-link">
           <i class="fa-solid fa-bolt"></i> Electricity
         </a>
+        <a href="cable.php" class="sidebar-link">
+          <i class="fa-solid fa-tv"></i> Cable TV
+        </a>
         <a href="transactions.php" class="sidebar-link">
           <i class="fa-solid fa-clock-rotate-left"></i> Transactions
         </a>
@@ -103,7 +106,7 @@
           </div>
 
           <!-- Quick Actions -->
-          <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-5 gap-4">
             <a href="data.php" class="service-card p-4 text-center group">
               <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-500/30 transition-colors">
                 <i class="fa-solid fa-wifi text-blue-400 text-xl"></i>
@@ -131,6 +134,13 @@
               </div>
               <div class="text-sm font-semibold text-white">Electricity</div>
               <div class="text-xs text-slate-500 mt-0.5">All DISCOs</div>
+            </a>
+            <a href="cable.php" class="service-card p-4 text-center group">
+              <div class="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-pink-500/30 transition-colors">
+                <i class="fa-solid fa-tv text-pink-400 text-xl"></i>
+              </div>
+              <div class="text-sm font-semibold text-white">Cable TV</div>
+              <div class="text-xs text-slate-500 mt-0.5">DSTV/GOTV</div>
             </a>
           </div>
         </div>

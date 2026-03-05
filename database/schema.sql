@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS transactions (
   id          INT AUTO_INCREMENT PRIMARY KEY,
   user_id     INT            NOT NULL,
   reference   VARCHAR(50)    NOT NULL UNIQUE,
-  type        VARCHAR(30)    NOT NULL COMMENT 'Data, Airtime, Education, Electricity',
+  type        VARCHAR(30)    NOT NULL COMMENT 'Data, Airtime, Education, Electricity, CableTv',
   description VARCHAR(255)   NOT NULL,
   amount      DECIMAL(12,2)  NOT NULL,
   status      VARCHAR(20)    NOT NULL DEFAULT 'Pending' COMMENT 'Pending, Success, Failed',
