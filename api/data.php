@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/alrahuzdata.php';
 
 header('Content-Type: application/json');
 initSession();
@@ -21,13 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $userId = $_SESSION['user_id'];
 $input  = getJsonInput();
 
-$network = $input['network'] ?? '';
+$network  = $input['network'] ?? '';
 $planName = $input['plan_name'] ?? '';
-$price   = (float)($input['price'] ?? 0);
-$phone   = trim($input['phone'] ?? '');
+$planId   = (int)($input['plan_id'] ?? 0);
+$price    = (float)($input['price'] ?? 0);
+$phone    = trim($input['phone'] ?? '');
+
+// Network name → AlrahuzData network ID mapping
+$networkIds = ['MTN' => 1, 'Glo' => 2, '9mobile' => 3, 'Airtel' => 4];
 
 // Validate
-if (!in_array($network, ['MTN', 'Airtel', 'Glo', '9mobile'])) {
+if (!isset($networkIds[$network])) {
     jsonResponse(['error' => 'Invalid network selected.'], 400);
 }
 if (!$planName || $price <= 0) {
@@ -42,10 +47,25 @@ if (!deductWallet($userId, $price)) {
     jsonResponse(['error' => 'Insufficient wallet balance.', 'balance' => getWalletBalance($userId)], 400);
 }
 
-// TODO: Call VTU provider API to deliver data bundle.
-// For now, simulate success.
+// Call AlrahuzData API to deliver data bundle
+$apiResult = alrahuzBuyData($networkIds[$network], $phone, $planId);
 
-$txnId = addTransaction($userId, 'Data', "$network $planName Data", $price, 'Success', $phone);
+// Determine transaction status from provider response
+$status = 'Pending';
+if (isset($apiResult['Status']) && strtolower($apiResult['Status']) === 'successful') {
+    $status = 'Success';
+} elseif (isset($apiResult['status']) && strtolower((string)$apiResult['status']) === 'success') {
+    $status = 'Success';
+} elseif (isset($apiResult['error']) && !isset($apiResult['Status'])) {
+    // Provider returned an error – refund the user
+    fundWallet($userId, $price);
+    jsonResponse([
+        'error'   => $apiResult['error'] ?? 'Data purchase failed. Please try again.',
+        'balance' => getWalletBalance($userId),
+    ], 400);
+}
+
+$txnId = addTransaction($userId, 'Data', "$network $planName Data", $price, $status, $phone);
 
 jsonResponse([
     'success'     => true,

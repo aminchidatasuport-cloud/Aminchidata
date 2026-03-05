@@ -30,11 +30,10 @@ return [
         'base_url'   => 'https://api.flutterwave.com/v3',
     ],
 
-    // VTU API Provider (e.g. VTpass, SMEPlug, etc.)
-    'vtu_api' => [
-        'base_url' => getenv('VTU_API_URL') ?: '',
-        'api_key'  => getenv('VTU_API_KEY') ?: '',
-        'secret'   => getenv('VTU_API_SECRET') ?: '',
+    // AlrahuzData VTU API Provider (https://alrahuzdata.com.ng/documentation/)
+    'alrahuzdata' => [
+        'base_url'  => getenv('ALRAHUZDATA_BASE_URL') ?: 'https://alrahuzdata.com.ng',
+        'api_token' => getenv('ALRAHUZDATA_API_TOKEN') ?: '',
     ],
 
     // Default wallet balance for new users (Naira)
