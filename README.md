@@ -72,6 +72,8 @@ Aminchidata/
 ├── profile.php             # Profile & settings (requires login)
 ├── admin-login.php         # Admin login page
 ├── admin.php               # Admin panel (requires admin)
+├── .env.example            # Environment variable template (copy to .env)
+├── .gitignore              # Git ignore rules (.env, IDE files, etc.)
 ├── .htaccess               # Apache config, .html→.php redirect, security rules
 │
 ├── config/
@@ -79,6 +81,7 @@ Aminchidata/
 │   └── database.php        # Database connection credentials
 │
 ├── includes/
+│   ├── env.php             # Lightweight .env file loader
 │   ├── db.php              # PDO database connection (singleton)
 │   ├── auth.php            # Session-based authentication helpers
 │   └── functions.php       # Shared utilities (wallet, transactions, validation)
@@ -142,24 +145,39 @@ mysql -u root -p < database/schema.sql
 
 This creates the `aminchidata` database with all tables and seeds demo + admin users.
 
-### Step 3 — Configure database credentials
+### Step 3 — Configure environment variables
 
-Edit `config/database.php` with your MySQL credentials, or set environment variables:
+Copy the example file and fill in your credentials:
 
 ```bash
-export DB_HOST=localhost
-export DB_NAME=aminchidata
-export DB_USER=root
-export DB_PASS=your_password
+cp .env.example .env
 ```
+
+Open `.env` in your editor and set at least the database credentials:
+
+```dotenv
+DB_HOST=localhost
+DB_NAME=aminchidata
+DB_USER=root
+DB_PASS=your_password
+```
+
+To enable AlrahuzData VTU services, add your API token:
+
+```dotenv
+ALRAHUZDATA_BASE_URL=https://alrahuzdata.com.ng
+ALRAHUZDATA_API_TOKEN=your_alrahuzdata_api_token_here
+```
+
+> **Tip:** System-level environment variables (e.g. set via `export`) take precedence over values in `.env`.
 
 ### Step 4 — Configure payment gateways (optional)
 
-Edit `config/app.php` or set environment variables for Paystack/Flutterwave:
+Add your Paystack/Flutterwave keys to the same `.env` file:
 
-```bash
-export PAYSTACK_PUBLIC_KEY=pk_test_xxxxx
-export PAYSTACK_SECRET_KEY=sk_test_xxxxx
+```dotenv
+PAYSTACK_PUBLIC_KEY=pk_test_xxxxx
+PAYSTACK_SECRET_KEY=sk_test_xxxxx
 ```
 
 ### Step 5 — Start the PHP development server
@@ -202,13 +220,14 @@ Password: admin123
 | `DB_NAME` | Database name (default: `aminchidata`) |
 | `DB_USER` | Database username (default: `root`) |
 | `DB_PASS` | Database password |
+| `APP_URL` | Application URL (default: `http://localhost`) |
+| `APP_DEBUG` | Enable debug mode (default: `false`) |
 | `PAYSTACK_PUBLIC_KEY` | Paystack public API key |
 | `PAYSTACK_SECRET_KEY` | Paystack secret API key |
 | `FLW_PUBLIC_KEY` | Flutterwave public key |
 | `FLW_SECRET_KEY` | Flutterwave secret key |
-| `VTU_API_URL` | VTU provider API base URL |
-| `VTU_API_KEY` | VTU provider API key |
-| `VTU_API_SECRET` | VTU provider API secret |
+| `ALRAHUZDATA_BASE_URL` | AlrahuzData API base URL (default: `https://alrahuzdata.com.ng`) |
+| `ALRAHUZDATA_API_TOKEN` | AlrahuzData API authorization token |
 
 ---
 
@@ -218,6 +237,7 @@ Password: admin123
 - All database queries use **PDO prepared statements** to prevent SQL injection
 - PHP sessions are configured with `httponly` and `strict mode` cookies
 - Sensitive directories (`config/`, `includes/`, `database/`) are protected via `.htaccess`
+- `.env` files are blocked by `.htaccess` and excluded from Git via `.gitignore`
 - The `.htaccess` redirects legacy `.html` URLs to `.php` for backward compatibility
 
 ---
