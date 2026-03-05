@@ -31,6 +31,7 @@
         <a href="airtime.php" class="sidebar-link"><i class="fa-solid fa-mobile-screen"></i> Buy Airtime</a>
         <a href="education.php" class="sidebar-link"><i class="fa-solid fa-graduation-cap"></i> Education</a>
         <a href="electricity.php" class="sidebar-link active"><i class="fa-solid fa-bolt"></i> Electricity</a>
+        <a href="cable.php" class="sidebar-link"><i class="fa-solid fa-tv"></i> Cable TV</a>
         <a href="transactions.php" class="sidebar-link"><i class="fa-solid fa-clock-rotate-left"></i> Transactions</a>
         <a href="profile.php" class="sidebar-link"><i class="fa-solid fa-user-gear"></i> Profile</a>
       </nav>
