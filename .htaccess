@@ -10,9 +10,17 @@
 </IfModule>
 
 # Deny access to config and include files directly
-<FilesMatch "\.(sql|log)$">
+<FilesMatch "\.(sql|log|env)$">
     Require all denied
 </FilesMatch>
+
+# Block .env files explicitly (including .env.example)
+<Files ".env">
+    Require all denied
+</Files>
+<Files ".env.example">
+    Require all denied
+</Files>
 
 # Protect sensitive directories
 <IfModule mod_rewrite.c>

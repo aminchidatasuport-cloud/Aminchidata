@@ -4,6 +4,9 @@
  * Returns a singleton PDO instance.
  */
 
+// Load .env variables before any config is read.
+require_once __DIR__ . '/env.php';
+
 function getDB(): PDO
 {
     static $pdo = null;

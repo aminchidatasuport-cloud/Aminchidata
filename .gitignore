@@ -1,0 +1,19 @@
+# Environment variables (contains secrets – never commit)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Composer (if added later)
+/vendor/
